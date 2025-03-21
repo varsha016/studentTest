@@ -493,13 +493,13 @@
 
 "use client";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUp, Check, X, Save, BookOpen } from "lucide-react";
 import jsPDF from "jspdf";
 import Loading from "../Loading/page";
 
-const SectionPage = () => {
+const SectionPageContent = () => {
     const searchParams = useSearchParams();
     const subcategoryId = searchParams.get("id") || "No value";
     const [userData, setUserData] = useState([]);
@@ -573,7 +573,7 @@ const SectionPage = () => {
         setIsSubmitting(true);
 
         try {
-            const responses = questions.map((q) => {
+            const responses = questions?.map((q) => {
                 const isDirectAnswer = q.questionType === "direct";
 
                 return {
@@ -694,7 +694,7 @@ const SectionPage = () => {
                         <h2 className="text-xl font-bold mb-4">{selectedSection.name}</h2>
                         {questions.length > 0 ? (
                             <div>
-                                {displayedQuestions.map((question, index) => (
+                                {displayedQuestions?.map((question, index) => (
                                     <div key={question._id} className="mb-4">
                                         <p className="text-lg font-semibold">
                                             Q{startIndex + index + 1}: {question.questionText}
@@ -717,7 +717,7 @@ const SectionPage = () => {
                                             </ul>
                                         ) : (
                                             <ul className="mt-2 space-y-2">
-                                                {question.options.map((option, optIndex) => {
+                                                {question.options?.map((option, optIndex) => {
                                                     const isCorrect = optIndex === question.correctOptionIndex;
                                                     const isSelected = answers[question._id] === option;
                                                     return (
@@ -829,7 +829,13 @@ const SectionPage = () => {
         </div>
     );
 };
+const SectionPage = () => (
+    <Suspense fallback={<p>Loading...</p>}>
+        <SectionPageContent />
+    </Suspense>
+);
 
 export default SectionPage;
+// export default SectionPage;
 
 

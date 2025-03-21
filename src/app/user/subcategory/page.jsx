@@ -1,3 +1,5 @@
+
+
 // "use client";
 
 // import { useSearchParams } from "next/navigation";
@@ -7,6 +9,7 @@
 // const SubcategoryPage = () => {
 //     const searchParams = useSearchParams();
 //     const categoryId = searchParams.get("id");
+//     const categoryName = searchParams.get("name") || "Category";
 
 //     const [subcategories, setSubcategories] = useState([]);
 //     const [loading, setLoading] = useState(true);
@@ -27,7 +30,7 @@
 //     return (
 //         <div className="flex justify-center items-center h-screen bg-blue-100">
 //             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
-//                 <h1 className="text-2xl font-bold mb-4">category name</h1>
+//                 <h1 className="text-2xl font-bold mb-4">{categoryName}</h1>
 //                 <hr className="mb-4" />
 
 //                 {loading ? (
@@ -39,7 +42,7 @@
 //                         {subcategories.length > 0 ? (
 //                             subcategories.map((sub, index) => (
 //                                 <Link key={sub._id} href={`/user/section?id=${sub._id}`}>
-//                                     <div className={`p-2 text-sm font-semibold cursor-pointer hover:bg-yellow-300 transition ${index === 5 ? 'bg-yellow-300' : 'bg-white'}`}>{sub.name}</div>
+//                                     <div className={`p-2 text-md font-semibold cursor-pointer hover:bg-gray-300 rounded-sm transition ${index === 5 ? 'bg-gray-300 rounded-sm' : 'bg-white'}`}>{sub.name}</div>
 //                                 </Link>
 //                             ))
 //                         ) : (
@@ -54,13 +57,16 @@
 
 // export default SubcategoryPage;
 
+
+
+
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 
-const SubcategoryPage = () => {
+const SubcategoryPageContent = () => {
     const searchParams = useSearchParams();
     const categoryId = searchParams.get("id");
     const categoryName = searchParams.get("name") || "Category";
@@ -96,7 +102,9 @@ const SubcategoryPage = () => {
                         {subcategories.length > 0 ? (
                             subcategories.map((sub, index) => (
                                 <Link key={sub._id} href={`/user/section?id=${sub._id}`}>
-                                    <div className={`p-2 text-md font-semibold cursor-pointer hover:bg-gray-300 rounded-sm transition ${index === 5 ? 'bg-gray-300 rounded-sm' : 'bg-white'}`}>{sub.name}</div>
+                                    <div className="p-2 text-md font-semibold cursor-pointer hover:bg-gray-300 rounded-sm transition">
+                                        {sub.name}
+                                    </div>
                                 </Link>
                             ))
                         ) : (
@@ -108,5 +116,11 @@ const SubcategoryPage = () => {
         </div>
     );
 };
+
+const SubcategoryPage = () => (
+    <Suspense fallback={<p>Loading...</p>}>
+        <SubcategoryPageContent />
+    </Suspense>
+);
 
 export default SubcategoryPage;
