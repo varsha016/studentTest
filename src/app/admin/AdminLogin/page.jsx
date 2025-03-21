@@ -76,7 +76,7 @@ const AdminLogin = () => {
     const [password, setPassword] = useState("123");
     const [error, setError] = useState("");
     const router = useRouter();
-    const baseURL = process.env.NEXT_PUBLIC_BACKEND_URLL || 'http://localhost:3000/api';
+    const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
     console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
 
 
