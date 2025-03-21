@@ -77,6 +77,8 @@ const AdminLogin = () => {
     const [error, setError] = useState("");
     const router = useRouter();
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
+    console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
+
 
     const handleAdminLogin = async (e) => {
         e.preventDefault();
