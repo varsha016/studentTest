@@ -80,7 +80,7 @@ const AdminLogin = () => {
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     console.log(baseURL, 'baseURL');
 
-    console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_API_URL);
+    // console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_API_URL);
 
 
 
