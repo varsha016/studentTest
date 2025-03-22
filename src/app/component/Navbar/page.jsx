@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import ProfileDropdown from "../../user/profiledropdown/page";
+import SearchBar from "../searchbar/page";
 
 const menuItems = [
     { label: "Home", dropdown: [], link: "/" },
@@ -107,7 +108,7 @@ export default function Navbar() {
                             ))}
                         </ul>
                     </nav>
-
+                    <SearchBar />
                     {/* Show ProfileDropdown only if user is logged in */}
                     <ProfileDropdown />
                 </div>

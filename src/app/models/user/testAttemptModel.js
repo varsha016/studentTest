@@ -42,7 +42,7 @@ const testAttemptSchema = new mongoose.Schema({
         {
             questionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question", required: true },
             questionText: { type: String, required: true }, // ✅ Add this line
-            answer: { type: String, required: true },
+            answer: { type: String, },
             isCorrect: { type: Boolean },
         }
     ],

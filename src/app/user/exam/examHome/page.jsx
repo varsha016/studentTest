@@ -8,7 +8,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const MainHomePage = () => {
+const ExamHome = () => {
     const [titleCategories, setTitleCategories] = useState([]);
     const [categoriesByTitle, setCategoriesByTitle] = useState({});
     const [loading, setLoading] = useState(true); // Loading state
@@ -51,7 +51,7 @@ const MainHomePage = () => {
     const router = useRouter();
 
     const handleCategoryClick = (categoryId, categoryName) => {
-        router.push(`/user/solvetestsubcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
+        router.push(`/user/exam/subcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
     };
     // const handleCategoryClick = (categoryId, categoryName) => {
     //     if (window.location.pathname === "/user/exam") {
@@ -97,4 +97,4 @@ const MainHomePage = () => {
     );
 };
 
-export default MainHomePage;
+export default ExamHome;

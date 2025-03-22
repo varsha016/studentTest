@@ -17,6 +17,7 @@
 "use client";
 import React, { useEffect } from 'react';
 import MainHomePage from '../homepage/page';
+import ExamHome from './examHome/page';
 
 function ExamPage() {
     useEffect(() => {
@@ -31,7 +32,7 @@ function ExamPage() {
     return (
         <div>
             {/* <h1>Welcome to the Exam Page. You can start your exam now!</h1> */}
-            <MainHomePage />
+            < ExamHome />
         </div>
     );
 }
