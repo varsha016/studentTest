@@ -78,7 +78,9 @@ const AdminLogin = () => {
     const router = useRouter();
     // const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000/api';
     const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-    console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
+    console.log(baseURL, 'baseURL');
+
+    console.log('Backend URL:', process.env.NEXT_PUBLIC_BACKEND_API_URL);
 
 
 
