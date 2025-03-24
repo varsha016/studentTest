@@ -1,31 +1,25 @@
+import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import Question from "../../../models/admin/QuestionModel";
-import Option from "../../../models/admin/OptionModel";
 
 export async function DELETE(req) {
     try {
         await connectDB();
-        const { questionId } = await req.json();
+        const { id } = await req.json();
 
-        if (!questionId) {
-            return new Response(JSON.stringify({ message: "Question ID is required" }), { status: 400 });
+        if (!id) {
+            return NextResponse.json({ success: false, message: "Question ID is required" }, { status: 400 });
         }
 
-        const existingQuestion = await Question.findById(questionId);
-        if (!existingQuestion) {
-            return new Response(JSON.stringify({ message: "Question not found" }), { status: 404 });
+        const deletedQuestion = await Question.findByIdAndDelete(id);
+
+        if (!deletedQuestion) {
+            return NextResponse.json({ success: false, message: "Question not found" }, { status: 404 });
         }
 
-        // ✅ Delete associated options if it's an MCQ
-        if (existingQuestion.options.length > 0) {
-            await Option.deleteMany({ _id: { $in: existingQuestion.options } });
-        }
-
-        await Question.findByIdAndDelete(questionId);
-
-        return new Response(JSON.stringify({ message: "Question deleted successfully" }), { status: 200 });
-
+        return NextResponse.json({ success: true, message: "Question deleted successfully" }, { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify({ message: "Internal Server Error", error: error.message }), { status: 500 });
+        console.error("🔥 Error deleting question:", error);
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

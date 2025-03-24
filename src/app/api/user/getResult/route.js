@@ -23,8 +23,9 @@ export async function GET(req) {
         const attempts = await TestAttempt.find({ userId })
             .populate("responses.questionId", "questionText")
             .populate("sectionId", "name");
+        return NextResponse.json({ success: true, data: Array.isArray(attempts) ? attempts : [] }, { status: 200 });
 
-        return NextResponse.json({ success: true, data: attempts }, { status: 200 });
+        // return NextResponse.json({ success: true, data: attempts }, { status: 200 });
     } catch (error) {
         console.error("🔥 Error fetching results:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

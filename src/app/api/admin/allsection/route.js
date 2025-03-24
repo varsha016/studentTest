@@ -4,9 +4,23 @@ import Section from "../../../models/admin/sectionModel";
 import Category from "../../../models/admin/CategoryModel"; // Import Category model first
 import SubCategory from "../../../models/admin/SubCategoryModel";
 import Question from "../../../models/admin/QuestionModel";
-export async function GET() {
+export async function GET(request) {
     try {
         await connectDB();
+
+        // Extract subcategoryId from query parameters
+        // const { searchParams } = new URL(req.url);
+        // const { searchParams } = new URL(request.url);
+        // const subcategoryId = searchParams.get("subcategoryId");
+        // console.log(subcategoryId, 'subcategoryId');
+
+
+        // if (!subcategoryId) {
+        //     return NextResponse.json(
+        //         { message: "subcategoryId is required" },
+        //         { status: 400 }
+        //     );
+        // }
         // Fetch all sections and populate the subCategory field.
         // You can further populate nested references if needed.
         const sections = await Section.find()

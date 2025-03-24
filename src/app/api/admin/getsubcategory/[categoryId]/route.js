@@ -1,30 +1,4 @@
-// import connectDB from "../../../../lib/db";
-// import SubCategory from "../../../../models/admin/SubCategoryModel";
 
-// export async function GET(req, { params }) {
-//     try {
-//         await connectDB();
-
-//         // Extract categoryId from the dynamic route
-//         // const { categoryId } = params;
-//         const { categoryId } = await context.params;
-
-
-//         // Find subcategories matching the categoryId
-//         const subCategories = await SubCategory.find({ category: categoryId }).populate("category");
-
-//         return new Response(JSON.stringify({ subCategories }), {
-//             status: 200,
-//             headers: { "Content-Type": "application/json" }
-//         });
-
-//     } catch (error) {
-//         return new Response(JSON.stringify({
-//             message: "Internal Server Error",
-//             error: error.message
-//         }), { status: 500 });
-//     }
-// }
 
 
 import connectDB from "../../../../lib/db";

@@ -94,11 +94,7 @@ export default function DashboardLayout({ children }) {
                                     Add Question
                                 </a>
                             </li>
-                            <li className="mb-2">
-                                <a href="/admin/dashboard/addoption" className="hover:underline">
-                                    Add Option
-                                </a>
-                            </li>
+
                         </ul>
                     </>
                 )}

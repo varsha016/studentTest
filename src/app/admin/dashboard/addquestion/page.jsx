@@ -223,6 +223,39 @@ export default function AddQuestion() {
         }
     };
 
+
+    // const updateQuestion = async (updatedData) => {
+    //     try {
+    //         const response = await axios.put("/api/admin/updatequestion", updatedData);
+
+    //         if (response.data.success) {
+    //             alert("Question updated successfully!");
+    //         } else {
+    //             alert(response.data.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating question:", error);
+    //         alert("Failed to update question.");
+    //     }
+    // };
+
+
+    // const deleteQuestion = async (id) => {
+    //     try {
+    //         const response = await axios.delete("/api/admin/deletequestion", { data: { id } });
+
+    //         if (response.data.success) {
+    //             alert("Question deleted successfully!");
+    //         } else {
+    //             alert(response.data.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error deleting question:", error);
+    //         alert("Failed to delete question.");
+    //     }
+    // };
+
+
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
             <h2 className="text-2xl font-bold mb-4">Add Question</h2>

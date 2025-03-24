@@ -53,19 +53,26 @@ const MainHomePage = () => {
     const handleCategoryClick = (categoryId, categoryName) => {
         router.push(`/user/solvetestsubcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
     };
-    // const handleCategoryClick = (categoryId, categoryName) => {
-    //     if (window.location.pathname === "/user/exam") {
-    //         router.push(`/user/subcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
-    //     } else {
-    //         router.push(`/user/solvetestsubcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
-    //     }
-    // };
+
 
     return (
         <main className="container mx-auto py-10">
             {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                // Skeleton Loader
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                        <div
+                            key={index}
+                            className="bg-gray-200 animate-pulse shadow-lg rounded-lg p-5 h-40"
+                        >
+                            <div className="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
+                            <div className="space-y-2">
+                                <div className="h-6 bg-gray-300 rounded w-5/6"></div>
+                                <div className="h-6 bg-gray-300 rounded w-4/6"></div>
+                                <div className="h-6 bg-gray-300 rounded w-2/6"></div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10">
@@ -77,7 +84,6 @@ const MainHomePage = () => {
                             <h2 className="bg-blue-900 text-white text-xl font-bold p-2 rounded">
                                 {titleCategory.title}
                             </h2>
-                            {/* Display categories under each title category */}
                             <div className="mt-4 space-y-2">
                                 {categoriesByTitle[titleCategory._id]?.map((category, i) => (
                                     <div
@@ -94,6 +100,39 @@ const MainHomePage = () => {
                 </div>
             )}
         </main>
+
+        // <main className="container mx-auto py-10">
+        //     {loading ? (
+        //         <div className="flex justify-center items-center h-screen">
+        //             <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        //         </div>
+        //     ) : (
+        //         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10">
+        //             {titleCategories.map((titleCategory, index) => (
+        //                 <div
+        //                     key={index}
+        //                     className="bg-white shadow-lg rounded-lg p-5 hover:shadow-2xl transition duration-300"
+        //                 >
+        //                     <h2 className="bg-blue-900 text-white text-xl font-bold p-2 rounded">
+        //                         {titleCategory.title}
+        //                     </h2>
+        //                     {/* Display categories under each title category */}
+        //                     <div className="mt-4 space-y-2">
+        //                         {categoriesByTitle[titleCategory._id]?.map((category, i) => (
+        //                             <div
+        //                                 key={i}
+        //                                 onClick={() => handleCategoryClick(category._id, category.name)}
+        //                                 className="block hover:bg-blue-200 py-2 px-2 hover:text-blue-900 rounded-sm text-lg cursor-pointer"
+        //                             >
+        //                                 - {category.name}
+        //                             </div>
+        //                         ))}
+        //                     </div>
+        //                 </div>
+        //             ))}
+        //         </div>
+        //     )}
+        // </main>
     );
 };
 
