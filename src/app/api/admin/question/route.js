@@ -5,11 +5,51 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import Question from "../../../models/admin/QuestionModel";
+import Permission from "../../../models/admin/Permission";
+import { authenticate } from "../../../lib/auth/auth";
+
 
 export async function POST(req) {
     try {
         await connectDB();
-        let {
+
+        // Authenticate the user
+        const { operator } = await authenticate(req);
+        console.log("Authenticated Operator:", operator);
+
+        if (!operator) {
+            return NextResponse.json({ message: "Unauthorized: Operator not found" }, { status: 401 });
+        }
+        console.log("Operator:", operator);
+
+        if (!operator.operators || operator.operators.length === 0) {
+            return NextResponse.json({ message: "Unauthorized: No operators found" }, { status: 401 });
+        }
+
+        // Find an operator with permission
+        const authorizedOperator = await Promise.all(
+            operator.operators.map(async (op) => {
+                if (!op.permissionId) return null; // Skip if no permissionId
+                const permission = await Permission.findById(op.permissionId);
+                if (permission?.addQuestion) {
+                    return { operator: op, permission };
+                }
+                return null;
+            })
+        );
+
+        // Filter valid operators with permission
+        const validOperator = authorizedOperator.find((op) => op !== null);
+
+        if (!validOperator) {
+            return NextResponse.json({ message: "Forbidden: No operators with permission to add questions" }, { status: 403 });
+        }
+
+
+        const { operator: selectedOperator } = validOperator;
+
+        // Proceed with creating the question
+        const {
             subCategory,
             questionText,
             questionType,
@@ -19,34 +59,18 @@ export async function POST(req) {
             answerExplanation,
         } = await req.json();
 
-        // Validate required fields
         if (!subCategory || !questionText || !questionType) {
-            return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
+            return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
 
-        // Validate MCQ options & correctOptionIndex
-        if (questionType === "mcq") {
-            if (!options || !Array.isArray(options) || options.length === 0) {
-                return NextResponse.json({ success: false, message: "MCQ questions must have options" }, { status: 400 });
-            }
-            if (correctOptionIndex === undefined || correctOptionIndex < 0 || correctOptionIndex >= options.length) {
-                return NextResponse.json({ success: false, message: "Invalid correctOptionIndex" }, { status: 400 });
-            }
-            options = options.map(opt => String(opt).trim()); // Sanitize options
+        if (
+            questionType === "mcq" &&
+            (!Array.isArray(options) || options.length < 2 || correctOptionIndex === undefined || correctOptionIndex >= options.length)
+        ) {
+            return NextResponse.json({ message: "Invalid MCQ question data" }, { status: 400 });
         }
 
-        // Validate direct answer
-        if (questionType === "direct" && (!directAnswer || directAnswer.trim() === "")) {
-            return NextResponse.json({ success: false, message: "Direct answer is required" }, { status: 400 });
-        }
-
-        // Validate answer explanation
-        if (!answerExplanation || answerExplanation.trim() === "") {
-            return NextResponse.json({ success: false, message: "Answer explanation is required" }, { status: 400 });
-        }
-
-        // Create new question
-        const newQuestion = await Question.create({
+        const questionData = {
             subCategory,
             questionText,
             questionType,
@@ -54,11 +78,20 @@ export async function POST(req) {
             correctOptionIndex: questionType === "mcq" ? correctOptionIndex : null,
             directAnswer: questionType === "direct" ? directAnswer : "",
             answerExplanation,
-        });
+            createdBy: selectedOperator._id,
+            status: "draft",
+        };
 
-        return NextResponse.json({ success: true, message: "Question added successfully!", data: newQuestion }, { status: 201 });
+        const newQuestion = await Question.create(questionData);
+        return NextResponse.json({ message: "Question added successfully", data: newQuestion }, { status: 201 });
+
+
     } catch (error) {
-        console.error("🔥 Error adding question:", error);
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+        console.error("Error adding question:", error);
+        return NextResponse.json({ message: error.message }, { status: 500 });
     }
 }
+
+
+
+

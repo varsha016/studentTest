@@ -114,22 +114,22 @@ const SectionPageContent = () => {
         }
     };
 
-    const handleSaveQuestion = (question) => {
-        const savedQuestion = {
-            ...question,
-            userAnswer: answers[question._id], // Include the user's answer
-        };
+    // const handleSaveQuestion = (question) => {
+    //     const savedQuestion = {
+    //         ...question,
+    //         userAnswer: answers[question._id], // Include the user's answer
+    //     };
 
-        // Update the state with the new saved question
-        setSavedQuestions((prev) => {
-            const updatedSavedQuestions = [...prev, savedQuestion];
-            // Save the updated list to localStorage
-            localStorage.setItem("savedQuestions", JSON.stringify(updatedSavedQuestions));
-            return updatedSavedQuestions;
-        });
+    //     // Update the state with the new saved question
+    //     setSavedQuestions((prev) => {
+    //         const updatedSavedQuestions = [...prev, savedQuestion];
+    //         // Save the updated list to localStorage
+    //         localStorage.setItem("savedQuestions", JSON.stringify(updatedSavedQuestions));
+    //         return updatedSavedQuestions;
+    //     });
 
-        alert("Question saved!");
-    };
+    //     alert("Question saved!");
+    // };
 
     // const handleSaveQuestion = (question) => {
     //     const savedQuestion = {
@@ -140,6 +140,22 @@ const SectionPageContent = () => {
     //     localStorage.setItem("savedQuestions", JSON.stringify([...savedQuestions, savedQuestion]));
     //     alert("Question saved!");
     // };
+    const handleSaveQuestion = (question) => {
+        const savedQuestion = {
+            ...question,
+            userAnswer: answers[question._id], // Include the user's answer
+        };
+
+        // Ensure it fetches the previous data safely
+        const currentQuestions = JSON.parse(localStorage.getItem("savedQuestions")) || [];
+        const updatedSavedQuestions = [...currentQuestions, savedQuestion];
+
+        // Update localStorage
+        localStorage.setItem("savedQuestions", JSON.stringify(updatedSavedQuestions));
+        setSavedQuestions(updatedSavedQuestions);
+
+        alert("Question saved!");
+    };
 
     const handleShowExplanation = (questionId) => {
         setShowExplanation((prev) => ({

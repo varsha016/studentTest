@@ -1,11 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function AddTitleCategory() {
     const [title, setTitle] = useState("");
+    const [permissions, setPermissions] = useState({});
+    const [userEmail, setUserEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        fetchLoggedInUser();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,8 +36,38 @@ export default function AddTitleCategory() {
         }
     };
 
+
+    const fetchLoggedInUser = () => {
+        const operator = JSON.parse(localStorage.getItem("operatorInfo")); // Assuming user data is stored in localStorage
+        if (operator?.email) {
+            setUserEmail(operator.email);
+            fetchOperators(operator.email);
+        }
+    };
+    // Function to fetch operator permissions
+    const fetchOperators = async (email) => {
+        try {
+            const response = await axios.get('/api/admin/getoperator');
+
+            if (response.data.length > 0) {
+                const loggedInOperator = response.data.find(op => op.email === email);
+                console.log("loggedInOperator", loggedInOperator);
+
+                if (loggedInOperator) {
+                    setPermissions(loggedInOperator?.permissionId || {});
+                }
+            }
+        } catch (err) {
+            setMessage(`❌ ${err.response?.data?.message || err.message}`);
+        }
+    };
+
+
+
+
     return (
         <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6 mt-10">
+            {/* <pre>{JSON.stringify(permissions, null, 2)}</pre> */}
             <h2 className="text-xl font-semibold mb-4">Add Title Category</h2>
 
             {message && <p className={`mb-3 text-sm ${message.includes("✅") ? "text-green-500" : "text-red-500"}`}>{message}</p>}
@@ -47,14 +83,25 @@ export default function AddTitleCategory() {
                         placeholder="Enter title..."
                     />
                 </div>
+                {permissions.addQuestion === undefined ? (
+                    <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
+                        Loading permissions...
+                    </div>
+                ) : permissions.addQuestion ? (
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+                        disabled={loading}
+                    >
+                        {loading ? "Adding..." : "Add Title"}
+                    </button>
+                ) : (
+                    <div className="w-full text-red-500 px-4 py-2 rounded-md bg-red-100">
+                        You are not authorized to add Title
+                    </div>
+                )}
 
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-                    disabled={loading}
-                >
-                    {loading ? "Adding..." : "Add Title"}
-                </button>
+
             </form>
         </div>
     );

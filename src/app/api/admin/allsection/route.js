@@ -8,21 +8,7 @@ export async function GET(request) {
     try {
         await connectDB();
 
-        // Extract subcategoryId from query parameters
-        // const { searchParams } = new URL(req.url);
-        // const { searchParams } = new URL(request.url);
-        // const subcategoryId = searchParams.get("subcategoryId");
-        // console.log(subcategoryId, 'subcategoryId');
-
-
-        // if (!subcategoryId) {
-        //     return NextResponse.json(
-        //         { message: "subcategoryId is required" },
-        //         { status: 400 }
-        //     );
-        // }
-        // Fetch all sections and populate the subCategory field.
-        // You can further populate nested references if needed.
+        // Fetch all sections
         const sections = await Section.find()
             .populate({
                 path: "subCategory", // Populate the subCategory field in Section

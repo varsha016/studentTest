@@ -7,6 +7,40 @@ export default function AddCategory() {
     const [selectedTitleCategory, setSelectedTitleCategory] = useState("");
     const [categoryName, setCategoryName] = useState("");
     const [message, setMessage] = useState("");
+    const [permissions, setPermissions] = useState({});
+    const [userEmail, setUserEmail] = useState("");
+
+
+
+
+    useEffect(() => {
+        fetchLoggedInUser();
+    }, []);
+
+    const fetchLoggedInUser = () => {
+        const operator = JSON.parse(localStorage.getItem("operatorInfo")); // Assuming user data is stored in localStorage
+        if (operator?.email) {
+            setUserEmail(operator.email);
+            fetchOperators(operator.email);
+        }
+    };
+    // Function to fetch operator permissions
+    const fetchOperators = async (email) => {
+        try {
+            const response = await axios.get('/api/admin/getoperator');
+
+            if (response.data.length > 0) {
+                const loggedInOperator = response.data.find(op => op.email === email);
+                console.log("loggedInOperator", loggedInOperator);
+
+                if (loggedInOperator) {
+                    setPermissions(loggedInOperator?.permissionId || {});
+                }
+            }
+        } catch (err) {
+            setMessage(`❌ ${err.response?.data?.message || err.message}`);
+        }
+    };
 
     // Fetch all Title Categories on page load
     useEffect(() => {
@@ -21,7 +55,7 @@ export default function AddCategory() {
         fetchTitleCategories();
     }, []);
 
-    // Handle Form Submission
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedTitleCategory || !categoryName) {
@@ -29,10 +63,20 @@ export default function AddCategory() {
             return;
         }
 
+        const operatorToken = localStorage.getItem('operatorToken');
+        if (!operatorToken) {
+            setMessage("You are not authorized. Please login.");
+            return;
+        }
+
         try {
             const res = await axios.post("/api/admin/category", {
                 titleCategory: selectedTitleCategory,
                 name: categoryName,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${operatorToken}`,
+                },
             });
 
             if (res.status === 201) {
@@ -43,7 +87,7 @@ export default function AddCategory() {
             }
         } catch (error) {
             console.error("Error adding category:", error);
-            setMessage("Something went wrong. Please try again.");
+            setMessage(error.response?.data?.message || "Something went wrong.");
         }
     };
 
@@ -86,12 +130,23 @@ export default function AddCategory() {
                 </div>
 
                 {/* Submit Button */}
-                <button
+                {permissions.addQuestion === undefined ? (
+                    <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
+                        Loading permissions...
+                    </div>
+                ) : permissions.addCategory ? (<button
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
                 >
                     Add Category
-                </button>
+                </button>)
+                    : (<div className="w-full  text-red-500 px-4 rounded-md  transition">
+                        You are not authorized to add Title
+                    </div>)
+                }
+
+
+
             </form>
         </div>
     );

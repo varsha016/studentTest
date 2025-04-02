@@ -11,20 +11,54 @@ export default function SearchBar() {
     const [fuse, setFuse] = useState(null);
     const dropdownRef = useRef(null);
 
-    const fetchQuestions = async () => {
-        try {
-            const res = await axios.get('/api/admin/getallquestion');
-            setData(res.data.data);
-            setSearchResults(res.data.data);
-            setFuse(new Fuse(res.data.data, { keys: ["questionText"], threshold: 0.3 }));
-        } catch (error) {
-            console.error('Error fetching questions:', error);
-        }
-    };
+
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
-        fetchQuestions();
+        const fetchApprovedQuestions = async () => {
+            try {
+                if (typeof window === "undefined") return;
+
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("No token found. Redirecting to login...");
+                    return;
+                }
+
+                console.log("Using Token:", token);
+
+                const response = await axios.get("/api/admin/fetchApprovedQuestions", {
+                    headers: {
+                        Authorization: `Bearer ${token.trim()}`,
+                    },
+                });
+
+                console.log("✅ API Response:", response);
+                console.log("✅ Approved Questions:", response.data.questions);
+
+                if (response.data.questions.length === 0) {
+                    setMessage("No approved questions available.");
+                } else {
+                    setSearchResults(response.data.questions);
+                    setFuse(new Fuse(response.data.questions, { keys: ["questionText"], threshold: 0.3 }));
+                    setMessage(""); // Clear message if questions are available
+                }
+            } catch (error) {
+                console.error("❌ Error fetching questions:", error);
+
+                if (error.response) {
+                    console.error("❌ API Response Error:", error.response);
+                    setMessage(`Error: ${error.response.data.message || "Unknown error"}`);
+                } else {
+                    console.error("❌ Request setup error", error.message);
+                    setMessage(`Error: ${error.message}`);
+                }
+            }
+        };
+
+        fetchApprovedQuestions();
     }, []);
+    console.log(searchResults, 'sssssssssssssssssssssssss');
 
     const handleSearch = (e) => {
         const term = e.target.value;
@@ -53,6 +87,7 @@ export default function SearchBar() {
 
     return (
         <div className="p-0 w-full max-w-md">
+
             {/* Search Input with Icon */}
             <div className="relative" ref={dropdownRef}>
                 <input
