@@ -13,7 +13,8 @@ export default function OperatorLoginPage() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
+    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
+    const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
