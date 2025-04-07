@@ -1,43 +1,5 @@
 
 
-// import jwt from 'jsonwebtoken';
-// import Admin from '../../models/admin/adminModel';
-
-
-
-// export async function authenticate(req) {
-//     try {
-//         const authHeader = req.headers.get("authorization");
-//         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//             throw new Error("Unauthorized: No token provided");
-//         }
-
-//         const token = authHeader.split(" ")[1];
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-//         const admin = await Admin.findById(decoded.adminId);
-//         if (!admin) {
-//             throw new Error("Unauthorized: Admin not found");
-//         }
-
-//         // If role is admin, return the admin object directly
-//         if (decoded.role === "admin") {
-//             return { operator: admin };
-//         }
-
-//         // Find the operator using their _id (if role is operator)
-//         const operator = admin.operators.find(op => op._id.toString() === decoded.operatorId);
-//         if (!operator) {
-//             throw new Error("Unauthorized: Operator not found");
-//         }
-
-//         return { operator };
-//     } catch (error) {
-//         console.error("Authentication Error:", error.message);
-//         throw new Error(error.message);
-//     }
-// }
-
 
 import jwt from 'jsonwebtoken';
 import Admin from '../../models/admin/adminModel';
