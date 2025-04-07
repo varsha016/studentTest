@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -27,12 +23,12 @@ const SubcategoryPageContent = () => {
         }
     }, [categoryId]);
 
-    if (!categoryId) return <p className="text-red-500">Invalid category</p>;
+    if (!categoryId) return <p className="text-red-500 text-center">Invalid category</p>;
 
     return (
-        <div className="flex justify-center items-center h-screen bg-blue-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
-                <h1 className="text-2xl font-bold mb-4">{categoryName}</h1>
+        <div className="flex justify-center items-center min-h-screen bg-gray-200 p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+                <h1 className="text-2xl font-bold mb-4 text-center">{categoryName}</h1>
                 <hr className="mb-4" />
 
                 {loading ? (
@@ -40,17 +36,17 @@ const SubcategoryPageContent = () => {
                         <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {subcategories.length > 0 ? (
-                            subcategories.map((sub, index) => (
+                            subcategories.map((sub) => (
                                 <Link key={sub._id} href={`/user/testsection?id=${sub._id}`}>
-                                    <div className="p-2 text-md font-semibold cursor-pointer hover:bg-gray-300 rounded-sm transition">
+                                    <div className="p-3 text-md font-semibold cursor-pointer bg-gray-100 hover:bg-gray-300 rounded-md transition text-center">
                                         {sub.name}
                                     </div>
                                 </Link>
                             ))
                         ) : (
-                            <p className="text-gray-500">No subcategories found.</p>
+                            <p className="text-gray-500 text-center col-span-full">No subcategories found.</p>
                         )}
                     </div>
                 )}

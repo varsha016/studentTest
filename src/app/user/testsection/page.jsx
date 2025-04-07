@@ -114,32 +114,7 @@ const SectionPageContent = () => {
         }
     };
 
-    // const handleSaveQuestion = (question) => {
-    //     const savedQuestion = {
-    //         ...question,
-    //         userAnswer: answers[question._id], // Include the user's answer
-    //     };
 
-    //     // Update the state with the new saved question
-    //     setSavedQuestions((prev) => {
-    //         const updatedSavedQuestions = [...prev, savedQuestion];
-    //         // Save the updated list to localStorage
-    //         localStorage.setItem("savedQuestions", JSON.stringify(updatedSavedQuestions));
-    //         return updatedSavedQuestions;
-    //     });
-
-    //     alert("Question saved!");
-    // };
-
-    // const handleSaveQuestion = (question) => {
-    //     const savedQuestion = {
-    //         ...question,
-    //         userAnswer: answers[question._id],
-    //     };
-    //     setSavedQuestions((prev) => [...prev, savedQuestion]);
-    //     localStorage.setItem("savedQuestions", JSON.stringify([...savedQuestions, savedQuestion]));
-    //     alert("Question saved!");
-    // };
     const handleSaveQuestion = (question) => {
         const savedQuestion = {
             ...question,
@@ -232,30 +207,6 @@ const SectionPageContent = () => {
     };
 
 
-    // const handleCategoryClick = async (categoryId) => {
-    //     console.log(categoryId, "category id");
-    //     try {
-    //         setLoading(true);
-    //         const response = await axios.get(`/api/admin/allsection`, {
-    //             params: { subcategoryId: categoryId }, // Pass categoryId as subcategoryId
-    //         });
-    //         console.log(response, 'response');
-    //         console.log(response.data.sections);
-
-    //         if (response.data.sections.length > 0) {
-    //             setSections(response.data.sections);
-    //             setSelectedSection(response.data.sections[0]);
-    //         } else {
-    //             setSections([]);
-    //             setSelectedSection(null);
-    //             alert("No sections found for this subcategory.");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching sections:", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     return (
         <div className="flex h-screen">
@@ -287,24 +238,7 @@ const SectionPageContent = () => {
                     <p className="text-gray-500">No categories available</p>
                 )}
             </div>
-            {/* <div className="p-6 bg-gray-100 rounded-lg shadow-sm max-w-md mx-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Categories</h2>
-                {subcategories.length > 0 ? (
-                    <ul className="space-y-2">
-                        {subcategories?.map((category) => (
-                            <li
-                                key={category._id}
-                                // onClick={() => handleCategoryClick(category._id)}
-                                className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition duration-300"
-                            >
-                                {category.name}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500">No categories available</p>
-                )}
-            </div> */}
+
 
             <main className="w-3/4 p-6 bg-gray-200 overflow-y-scroll flex flex-col items-center">
                 {loading && <Loading />}
@@ -322,7 +256,7 @@ const SectionPageContent = () => {
                                 </li>
                             ))
                         ) : (
-                            <p className="text-gray-500"> No sections found.</p>
+                            <p className="text-gray-500"> Wait for the sections to load.</p>
                         )}
                     </ul>
                 </aside>

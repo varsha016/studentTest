@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../lib/db";
-import Question from "../../../models/admin/QuestionModel";
+import connectDB from "../../../../lib/db";
+import Question from "../../../../models/admin/QuestionModel";
+// import { authenticate } from "../../../../lib/auth";
 
 export async function PUT(req, { params }) {
     await connectDB();
 
     try {
-        const { id } = params;
+        // const admin = await authenticate(req);
+        const { id } = await params;
         const updateData = await req.json();
 
         if (!id) {

@@ -1,6 +1,5 @@
 
 
-
 // "use client";
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
@@ -18,6 +17,8 @@
 //     const fetchOperators = async () => {
 //         try {
 //             const response = await axios.get('/api/admin/getoperator');
+//             console.log("response", response);
+
 //             setOperators(response.data);
 //         } catch (err) {
 //             setError(err.response?.data?.message || err.message);
@@ -37,16 +38,28 @@
 //     };
 
 //     const handleUpdate = (operator) => {
-//         console.log(operator);
-//         setSelectedOperator(operator);
+//         console.log(operator, "operator");
+
+//         setSelectedOperator({
+//             ...operator,
+//             operatorId: operator._id,
+//             permissions: {
+//                 addQuestion: operator.permissionId?.addQuestion || false,
+//                 updateQuestion: operator.permissionId?.updateQuestion || false,
+//                 addCategory: operator.permissionId?.addCategory || false,
+//                 updateCategory: operator.permissionId?.updateCategory || false,
+//             }
+//         });
 //         setIsModalOpen(true);
 //     };
 
 //     const handleSave = async () => {
-//         console.log(selectedOperator, 'selectedOperator');
-
+//         console.log(selectedOperator, "selectedOperator");
 //         try {
-//             await axios.put('http://localhost:3000/api/admin/updateo', selectedOperator);
+//             // await axios.put('/api/admin/updateoperator', selectedOperator);
+//             const response = await axios.put('/api/superadmin/updateoperator', selectedOperator);
+//             console.log(response, "response");
+
 //             alert('Operator updated successfully');
 //             setIsModalOpen(false);
 //             fetchOperators();
@@ -55,9 +68,19 @@
 //         }
 //     };
 
+//     const handlePermissionChange = (permissionKey) => {
+//         setSelectedOperator((prev) => ({
+//             ...prev,
+//             permissions: {
+//                 ...prev.permissions,
+//                 [permissionKey]: !prev.permissions[permissionKey],
+//             },
+//         }));
+//     };
+
 //     return (
 //         <div className="container mx-auto p-8">
-//             <h1 className="text-2xl font-bold mb-4">Operator Details</h1>
+//             <h1 className="text-2xl font-bold mb-4 text-white">Operator Details</h1>
 
 //             {error && <p className="text-red-500">{error}</p>}
 
@@ -125,6 +148,20 @@
 //                             onChange={(e) => setSelectedOperator({ ...selectedOperator, email: e.target.value })}
 //                             className="border p-2 w-full mb-4"
 //                         />
+
+//                         <h3 className="font-bold mb-2">Permissions</h3>
+//                         {Object.keys(selectedOperator.permissions).map((key) => (
+//                             <label key={key} className="flex items-center mb-2">
+//                                 <input
+//                                     type="checkbox"
+//                                     checked={selectedOperator.permissions[key]}
+//                                     onChange={() => handlePermissionChange(key)}
+//                                     className="mr-2"
+//                                 />
+//                                 {key}
+//                             </label>
+//                         ))}
+
 //                         <button onClick={handleSave} className="bg-blue-500 text-white py-2 px-4 mr-2 rounded">Save</button>
 //                         <button onClick={() => setIsModalOpen(false)} className="bg-gray-500 text-white py-2 px-4 rounded">Cancel</button>
 //                     </div>
@@ -136,6 +173,7 @@
 
 // export default OperatorsPage;
 
+
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -145,19 +183,21 @@ const OperatorsPage = () => {
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOperator, setSelectedOperator] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchOperators();
     }, []);
 
     const fetchOperators = async () => {
+        setLoading(true);
         try {
             const response = await axios.get('/api/admin/getoperator');
-            console.log("response", response);
-
             setOperators(response.data);
         } catch (err) {
             setError(err.response?.data?.message || err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -174,8 +214,6 @@ const OperatorsPage = () => {
     };
 
     const handleUpdate = (operator) => {
-        console.log(operator, "operator");
-
         setSelectedOperator({
             ...operator,
             operatorId: operator._id,
@@ -190,12 +228,8 @@ const OperatorsPage = () => {
     };
 
     const handleSave = async () => {
-        console.log(selectedOperator, "selectedOperator");
         try {
-            // await axios.put('/api/admin/updateoperator', selectedOperator);
             const response = await axios.put('/api/superadmin/updateoperator', selectedOperator);
-            console.log(response, "response");
-
             alert('Operator updated successfully');
             setIsModalOpen(false);
             fetchOperators();
@@ -215,79 +249,93 @@ const OperatorsPage = () => {
     };
 
     return (
-        <div className="container mx-auto p-8">
-            <h1 className="text-2xl font-bold mb-4 text-white">Operator Details</h1>
+        <div className="container mx-auto p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl font-bold mb-4 text-white">Operator Details</h1>
 
             {error && <p className="text-red-500">{error}</p>}
 
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead>
-                    <tr className="bg-gray-200">
-                        <th className="py-2 px-4 border">Name</th>
-                        <th className="py-2 px-4 border">Email</th>
-                        <th className="py-2 px-4 border">Add Question</th>
-                        <th className="py-2 px-4 border">Update Question</th>
-                        <th className="py-2 px-4 border">Add Category</th>
-                        <th className="py-2 px-4 border">Update Category</th>
-                        <th className="py-2 px-4 border">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {operators.length === 0 ? (
-                        <tr>
-                            <td colSpan="7" className="text-center py-4">No operators found</td>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="py-2 px-4 border">Name</th>
+                            <th className="py-2 px-4 border">Email</th>
+                            <th className="py-2 px-4 border">Add Question</th>
+                            <th className="py-2 px-4 border">Update Question</th>
+                            <th className="py-2 px-4 border">Add Category</th>
+                            <th className="py-2 px-4 border">Update Category</th>
+                            <th className="py-2 px-4 border">Actions</th>
                         </tr>
-                    ) : (
-                        operators.map((operator) => (
-                            <tr key={operator._id} className="border-b">
-                                <td className="py-2 px-4 border">{operator.name}</td>
-                                <td className="py-2 px-4 border">{operator.email}</td>
-                                <td className="py-2 px-4 border">{operator.permissionId?.addQuestion ? '🟢' : '🔴'}</td>
-                                <td className="py-2 px-4 border">{operator.permissionId?.updateQuestion ? '🟢' : '🔴'}</td>
-                                <td className="py-2 px-4 border">{operator.permissionId?.addCategory ? '🟢' : '🔴'}</td>
-                                <td className="py-2 px-4 border">{operator.permissionId?.updateCategory ? '🟢' : '🔴'}</td>
-                                <td className="py-2 px-4 border">
-                                    <button
-                                        onClick={() => handleUpdate(operator)}
-                                        className="bg-blue-500 text-white py-1 px-3 mr-2 rounded"
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(operator._id)}
-                                        className="bg-red-500 text-white py-1 px-3 rounded"
-                                    >
-                                        Delete
-                                    </button>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="7" className="text-center py-6">
+                                    <div className="flex justify-center items-center space-x-2">
+                                        <div className="w-5 h-5 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                                        <span className="text-gray-600">Loading operators...</span>
+                                    </div>
                                 </td>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+                        ) : operators.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="text-center py-4 text-gray-500">No operators found</td>
+                            </tr>
+                        ) : (
+                            operators.map((operator) => (
+                                <tr key={operator._id} className="border-b">
+                                    <td className="py-2 px-4 border">{operator.name}</td>
+                                    <td className="py-2 px-4 border">{operator.email}</td>
+                                    <td className="py-2 px-4 border">{operator.permissionId?.addQuestion ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 border">{operator.permissionId?.updateQuestion ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 border">{operator.permissionId?.addCategory ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 border">{operator.permissionId?.updateCategory ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 border whitespace-nowrap">
+                                        <button
+                                            onClick={() => handleUpdate(operator)}
+                                            className="bg-blue-500 text-white py-1 px-3 mr-2 rounded"
+                                        >
+                                            Update
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(operator._id)}
+                                            className="bg-red-500 text-white py-1 px-3 rounded"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
+            {/* Modal */}
             {isModalOpen && selectedOperator && (
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-                    <div className="bg-white p-8 rounded-lg">
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50 p-4">
+                    <div className="bg-white p-6 rounded-lg max-w-md w-full">
                         <h2 className="text-xl font-bold mb-4">Update Operator</h2>
-                        <label className="block">Name:</label>
+
+                        <label className="block text-sm font-medium">Name:</label>
                         <input
                             type="text"
                             value={selectedOperator.name}
                             onChange={(e) => setSelectedOperator({ ...selectedOperator, name: e.target.value })}
-                            className="border p-2 w-full mb-4"
+                            className="border p-2 w-full mb-4 rounded"
                         />
-                        <label className="block">Email:</label>
+
+                        <label className="block text-sm font-medium">Email:</label>
                         <input
                             type="email"
                             value={selectedOperator.email}
                             onChange={(e) => setSelectedOperator({ ...selectedOperator, email: e.target.value })}
-                            className="border p-2 w-full mb-4"
+                            className="border p-2 w-full mb-4 rounded"
                         />
 
                         <h3 className="font-bold mb-2">Permissions</h3>
                         {Object.keys(selectedOperator.permissions).map((key) => (
-                            <label key={key} className="flex items-center mb-2">
+                            <label key={key} className="flex items-center mb-2 text-sm">
                                 <input
                                     type="checkbox"
                                     checked={selectedOperator.permissions[key]}
@@ -298,8 +346,10 @@ const OperatorsPage = () => {
                             </label>
                         ))}
 
-                        <button onClick={handleSave} className="bg-blue-500 text-white py-2 px-4 mr-2 rounded">Save</button>
-                        <button onClick={() => setIsModalOpen(false)} className="bg-gray-500 text-white py-2 px-4 rounded">Cancel</button>
+                        <div className="mt-4 flex justify-end space-x-2">
+                            <button onClick={handleSave} className="bg-blue-600 text-white py-2 px-4 rounded">Save</button>
+                            <button onClick={() => setIsModalOpen(false)} className="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}

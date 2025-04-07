@@ -1,9 +1,11 @@
 import connectDB from "../../../lib/db";
 import TitleCategory from "../../../models/admin/TitleCategoryModel";
+// import { authenticate } from "../../../../lib/auth";
 
 export async function GET() {
     try {
         await connectDB();
+
         const titleCategories = await TitleCategory.find({});
         return new Response(JSON.stringify(titleCategories), { status: 200 });
     } catch (error) {

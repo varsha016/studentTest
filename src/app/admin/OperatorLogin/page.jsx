@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 export default function OperatorLoginPage() {
-    const [formData, setFormData] = useState({ email: 'johndoe@example.com', password: 'password123' });
+    const [formData, setFormData] = useState({ name: "johndoe", email: 'johndoe@example.com', password: 'password123' });
     const [error, setError] = useState('');
     const router = useRouter();
 
@@ -13,13 +13,13 @@ export default function OperatorLoginPage() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
+    const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         try {
-            const response = await axios.post('/api/admin/operatorlogin', formData);
+            const response = await axios.post(`${baseURL}/admin/operatorlogin`, formData);
             console.log(response, "response");
 
             localStorage.setItem('operatorToken', response.data.result.token);
@@ -36,6 +36,15 @@ export default function OperatorLoginPage() {
                 <h1 className="text-2xl font-bold mb-6">Operator Login</h1>
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 <form onSubmit={handleSubmit}>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full p-3 mb-4 border rounded"
+                        required
+                    />
                     <input
                         name="email"
                         type="email"

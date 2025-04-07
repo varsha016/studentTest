@@ -175,7 +175,7 @@ export default function ClientLayout({ children }) {
     const isHomePage = pathname === "/" || pathname === "/user";
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-gray-200">
             {!isAdminRoute && <Navbar />}
 
             <main className="flex-1 p-4">

@@ -1,78 +1,116 @@
 
 
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import connectDB from "../../../../lib/db";
 import Question from "../../../../models/admin/QuestionModel";
 
-export async function PUT(req) {
-    await connectDB();
 
+import { authenticate } from "../../../../lib/auth/auth"; // ✅ Make sure this path is correct
+
+
+
+
+
+
+
+
+export async function PUT(req, { params }) {
     try {
-        const { _id, ...updateData } = await req.json(); // Corrected destructuring
-        console.log(updateData);
-        console.log(_id);
+        await connectDB();
 
-
-
-        if (!_id) {
-            return NextResponse.json({ success: false, message: "Question ID is required." }, { status: 400 });
+        const operator = await authenticate(req);
+        if (!operator) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const question = await Question.findById(_id);
+        const { id } = params;
+        const updatedData = await req.json();
 
-        if (!question) {
-            return NextResponse.json({ success: false, message: "Question not found." }, { status: 404 });
+        const existingQuestion = await Question.findById(id);
+
+        if (!existingQuestion) {
+            return NextResponse.json({
+                success: false,
+                message: "Question not found."
+            }, { status: 404 });
         }
 
-        // Update the question fields dynamically
-        Object.keys(updateData).forEach((key) => {
-            if (updateData[key] !== undefined) {
-                question[key] = updateData[key];
-            }
-        });
+        // Optional: enforce status logic if needed
+        if (existingQuestion.status !== "draft") {
+            return NextResponse.json({
+                success: false,
+                message: "Only draft questions can be updated."
+            }, { status: 403 });
+        }
 
-        question.updatedAt = new Date();
+        // ✅ Now update full question data
+        const updatedQuestion = await Question.findByIdAndUpdate(
+            id,
+            updatedData,
+            { new: true }
+        );
 
-        await question.save();
+        return NextResponse.json({
+            success: true,
+            message: "Question updated successfully.",
+            question: updatedQuestion
+        }, { status: 200 });
 
-        return NextResponse.json({ success: true, message: "Question updated successfully.", question }, { status: 200 });
     } catch (error) {
         console.error("Error updating question:", error);
-        return NextResponse.json({ success: false, message: "Server error." }, { status: 500 });
+        return NextResponse.json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        }, { status: 500 });
     }
 }
 
-// export async function PUT(req) {
-//     await connectDB();
 
+
+// export async function PUT(req, { params }) {
 //     try {
-//         const { id, ...updateData } = await req.json();
-// console.log(updateData);
+//         await connectDB();
 
-//         if (!id) {
-//             return NextResponse.json({ success: false, message: "Question ID is required." }, { status: 400 });
+//         // const { id } = context.params; // ✅ Correct way in App Router
+//         const { id } = await params;
+//         const { status } = await req.json();
+
+//         if (status !== "Draft") {
+//             return new Response(JSON.stringify({
+//                 success: false,
+//                 message: "You can only update status to 'Draft'."
+//             }), { status: 403 });
 //         }
 
-//         const question = await Question.findById(id);
+//         const updatedQuestion = await Question.findByIdAndUpdate(
+//             id,
+//             { status: "Draft" },
+//             { new: true }
+//         );
 
-//         if (!question) {
-//             return NextResponse.json({ success: false, message: "Question not found." }, { status: 404 });
+//         if (!updatedQuestion) {
+//             return new Response(JSON.stringify({
+//                 success: false,
+//                 message: "Question not found."
+//             }), { status: 404 });
 //         }
 
-//         // Update the question with provided fields
-//         Object.keys(updateData).forEach((key) => {
-//             if (updateData[key] !== undefined) {
-//                 question[key] = updateData[key];
-//             }
-//         });
+//         return new Response(JSON.stringify({
+//             success: true,
+//             message: "Question updated to Draft.",
+//             question: updatedQuestion
+//         }), { status: 200 });
 
-//         question.updatedAt = new Date();
-
-//         await question.save();
-
-//         return NextResponse.json({ success: true, message: "Question updated successfully.", question }, { status: 200 });
 //     } catch (error) {
 //         console.error("Error updating question:", error);
-//         return NextResponse.json({ success: false, message: "Server error." }, { status: 500 });
+//         return new Response(JSON.stringify({
+//             success: false,
+//             message: "Internal Server Error"
+//         }), { status: 500 });
 //     }
 // }
+
+
+
+

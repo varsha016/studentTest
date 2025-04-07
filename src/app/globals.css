@@ -24,3 +24,27 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* TipTap styles */
+.ProseMirror {
+  outline: none;
+  min-height: 150px;
+  padding: 8px;
+  font-size: 1rem;
+}
+
+.ProseMirror>*+* {
+  margin-top: 0.75em;
+}
+
+.ProseMirror strong {
+  font-weight: bold;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror u {
+  text-decoration: underline;
+}

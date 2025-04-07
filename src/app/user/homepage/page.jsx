@@ -15,8 +15,14 @@ const MainHomePage = () => {
 
     // Fetch Title Categories
     const fetchAllTitleCategories = async () => {
+        const token = localStorage.getItem("token")
         try {
-            const response = await axios.get("/api/admin/getalltitlecategory");
+            const response = await axios.get("/api/admin/getalltitlecategory", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
             setTitleCategories(response.data);
             await fetchAllCategories(response.data); // Fetch all categories after getting title categories
         } catch (error) {
@@ -56,7 +62,7 @@ const MainHomePage = () => {
 
 
     return (
-        <main className="container mx-auto py-10">
+        <main className="container mx-auto py-10 ">
             {loading ? (
                 // Skeleton Loader
                 <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10">

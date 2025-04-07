@@ -1,7 +1,7 @@
-
 import mongoose from "mongoose";
 const questionSchema = new mongoose.Schema({
     subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "SubCategory", required: true },
+
     questionText: { type: String, required: true },
     questionType: { type: String, enum: ["mcq", "direct"], required: true },
     options: { type: [String], required: function () { return this.questionType === "mcq"; } },
@@ -19,7 +19,5 @@ const questionSchema = new mongoose.Schema({
     updatedAt: { type: Date },
     rejectionReason: { type: String, default: null },
 });
-
-
 
 export default mongoose.models.Question || mongoose.model("Question", questionSchema);
