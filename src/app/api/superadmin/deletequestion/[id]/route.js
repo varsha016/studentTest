@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "/../../../lib/db";
-import Question from "/../../../models/admin/QuestionModel";
+import connectDB from "../../../../lib/db";
+import Question from "../../../../models/admin/QuestionModel";
 
 export async function DELETE({ params }) {
     await connectDB();
