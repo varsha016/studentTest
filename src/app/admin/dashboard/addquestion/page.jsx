@@ -159,8 +159,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import TiptapEditor from "../TiptapEditor/page";
+// import RichTextEditor from "../TiptapEditor/page";
 
+import dynamic from "next/dynamic";
+
+// Dynamically import RichTextEditor
+const RichTextEditor = dynamic(() => import('../../../components/RichTextEditor'), {
+    ssr: false,
+});
 export default function AddQuestion() {
     const [questionData, setQuestionData] = useState({
         subCategory: "",
@@ -269,12 +275,13 @@ export default function AddQuestion() {
                 {/* 📝 TiptapEditor replaces the normal input */}
                 <div>
                     <label className="font-medium">Question</label>
-                    <TiptapEditor
+                    <input type="text" name="questionText" placeholder="Enter Question" value={questionData.questionText} onChange={handleChange} className="w-full p-2 border rounded" required />
+                    {/* <RichTextEditor
                         value={questionData.questionText}
-                        onChange={(html) =>
-                            setQuestionData((prev) => ({ ...prev, questionText: html }))
+                        onChange={(newValue) =>
+                            setQuestionData((prev) => ({ ...prev, questionText: newValue }))
                         }
-                    />
+                    /> */}
                 </div>
 
                 <select

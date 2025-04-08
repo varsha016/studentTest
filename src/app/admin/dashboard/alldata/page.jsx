@@ -63,6 +63,8 @@ const TitleCategoryList = () => {
                     },
                 }
             );
+            console.log(res, 'res');
+
             const data = res.data;
 
             const map = {};
@@ -78,12 +80,13 @@ const TitleCategoryList = () => {
     };
 
     return (
-        <div className="p-4">
+
+        <div className="p-4 text-white">
             {loading ? (
                 <p>Loading...</p>
             ) : (
                 titleCategories.map((item) => (
-                    <div key={item._id} className="border rounded p-4 mb-4">
+                    <div key={item._id} className="border rounded p-4 mb-4 text-red-700">
                         <h2 className="font-bold text-xl">{item.title}</h2>
                         {item.categories?.map((cat, idx) => (
                             <div key={idx} className="ml-4 mt-2">

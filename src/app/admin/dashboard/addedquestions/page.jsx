@@ -1,5 +1,5 @@
 'use client';
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -18,10 +18,7 @@ function AddedQuestions() {
         setSelectedQuestion({ ...q });
         setShowModal(true);
     };
-    const handleClose = () => {
-        setShowModal(false);
-        setSelectedQuestion(null);
-    };
+
 
     const handleEdit = (index) => {
         setEditMode((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -93,6 +90,7 @@ function AddedQuestions() {
                 setQuestionList(updatedQuestions);
                 localStorage.setItem("addedQuestions", JSON.stringify(updatedQuestions));
                 alert("Question deleted successfully!");
+                fetchUpdatedQuestions();
             } else {
                 alert("Failed to delete question from the database.");
             }
@@ -190,7 +188,7 @@ function AddedQuestions() {
                             </thead>
                             <tbody>
                                 {questions?.map((q, index) => (
-                                    <tr key={q._id || index} className="border">
+                                    <tr key={q._id || index} className="border" >
                                         <td className="border p-2 text-white min-w-[150px] break-words whitespace-normal">
                                             {editMode[index] ? (
                                                 <input
@@ -210,12 +208,33 @@ function AddedQuestions() {
                                                     type="text"
                                                     name="questionText"
                                                     value={q.questionText}
+
                                                     onChange={(e) => handleChange(e, index)}
                                                     className="text-white p-1 border w-full"
                                                 />
                                             ) : (
                                                 q.questionText
                                             )}
+
+                                            {/* {editMode[index] ? (
+                                                <input
+                                                    type="text"
+                                                    name="questionText"
+                                                    value={q.questionText}
+                                                    onChange={(e) => handleChange(e, index)}
+                                                    className="text-white p-1 border w-full"
+                                                />
+                                            ) : /<\/?[a-z][\s\S]*>/i.test(q.questionText) ? (
+                                                // has HTML tags → render as HTML
+                                                <div
+                                                    className="prose prose-invert max-w-none text-white"
+                                                    dangerouslySetInnerHTML={{ __html: q.questionText }}
+                                                />
+                                            ) : (
+                                                // plain text → render directly
+                                                <span className="text-white">{q.questionText}</span>
+                                            )} */}
+
                                         </td>
                                         <td className="border p-2 text-white min-w-[200px] break-words whitespace-normal">
                                             <button
@@ -308,12 +327,29 @@ function AddedQuestions() {
                     >
                         <h2 className="text-xl font-bold mb-4">Question Details</h2>
 
-                        <label className="block mb-2">Question:</label>
+                        {/* <label className="block mb-2">Question:</label>
                         <input
                             className="w-full p-2 border rounded mb-4 bg-white text-black dark:bg-gray-700 dark:text-white"
                             value={selectedQuestion.questionText}
                             onChange={(e) => setSelectedQuestion({ ...selectedQuestion, questionText: e.target.value })}
-                        />
+                        /> */}
+                        <label className="block mb-2">Question:</label>
+
+                        {/<\/?[a-z][\s\S]*>/i.test(selectedQuestion.questionText) ? (
+                            <div
+                                className="w-full p-2 border rounded mb-4 bg-white text-black dark:bg-gray-700 dark:text-white prose prose-invert max-w-none"
+                                dangerouslySetInnerHTML={{ __html: selectedQuestion.questionText }}
+                            />
+                        ) : (
+                            <input
+                                className="w-full p-2 border rounded mb-4 bg-white text-black dark:bg-gray-700 dark:text-white"
+                                value={selectedQuestion.questionText}
+                                onChange={(e) =>
+                                    setSelectedQuestion({ ...selectedQuestion, questionText: e.target.value })
+                                }
+                            />
+                        )}
+
 
                         <label className="block mb-2">Options:</label>
                         {selectedQuestion.options?.map((opt, i) => (

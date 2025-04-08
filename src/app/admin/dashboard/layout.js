@@ -80,6 +80,7 @@ export default function DashboardLayout({ children }) {
 
     const menuItems = [
         { title: "Add Title Category", path: "/admin/dashboard/addtitlecategory" },
+        { title: "All Data", path: "/admin/dashboard/alldata" },
         { title: "Add Category", path: "/admin/dashboard/addcategory" },
         { title: "Add Section", path: "/admin/dashboard/addSection" },
         { title: "Add Subcategory", path: "/admin/dashboard/addsubcategory" },

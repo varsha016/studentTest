@@ -63,39 +63,39 @@ export default function AddTitleCategory() {
             setMessage(`❌ ${err.response?.data?.message || err.message}`);
         }
     };
-    const [titleCategories, setTitleCategories] = useState([]);
-    const fetchTitleCategoriesByOperator = async () => {
-        const token = localStorage.getItem("operatorToken");
-        const operatorInfo = JSON.parse(localStorage.getItem("operatorInfo") || "{}");
-        const operatorId = operatorInfo?.operatorId;
-        console.log(operatorId, "Operator ID from local storage");
+    // const [titleCategories, setTitleCategories] = useState([]);
+    // const fetchTitleCategoriesByOperator = async () => {
+    //     const token = localStorage.getItem("operatorToken");
+    //     const operatorInfo = JSON.parse(localStorage.getItem("operatorInfo") || "{}");
+    //     const operatorId = operatorInfo?.operatorId;
+    //     console.log(operatorId, "Operator ID from local storage");
 
-        if (!operatorId) return console.error("Operator ID not found");
-        console.log(`/api/admin/titlewithoperatorid/${operatorId}`, "API endpoint");
+    //     if (!operatorId) return console.error("Operator ID not found");
+    //     console.log(`/api/admin/titlewithoperatorid/${operatorId}`, "API endpoint");
 
-        try {
-            const response = await axios.get(`/api/admin/titlewithoperatorid/${operatorId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log(response, "response.data");
+    //     try {
+    //         const response = await axios.get(`/api/admin/titlewithoperatorid/${operatorId}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+    //         console.log(response, "response.data");
 
-            setTitleCategories(response.data);
-        } catch (error) {
-            console.error("Error fetching title categories:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    //         setTitleCategories(response.data);
+    //     } catch (error) {
+    //         console.error("Error fetching title categories:", error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchTitleCategoriesByOperator();
-    }, []);
+    // useEffect(() => {
+    //     fetchTitleCategoriesByOperator();
+    // }, []);
 
     return (
         <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6 mt-10">
-            <pre>{JSON.stringify(titleCategories, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(titleCategories, null, 2)}</pre> */}
             <h2 className="text-xl font-semibold mb-4">Add Title Category</h2>
 
             {message && <p className={`mb-3 text-sm ${message.includes("✅") ? "text-green-500" : "text-red-500"}`}>{message}</p>}
