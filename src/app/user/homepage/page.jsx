@@ -15,7 +15,7 @@ const MainHomePage = () => {
 
     // Fetch Title Categories
     const fetchAllTitleCategories = async () => {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("operatorToken");
         try {
             const response = await axios.get("/api/admin/getalltitlecategory", {
                 headers: {

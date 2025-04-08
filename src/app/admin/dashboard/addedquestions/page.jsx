@@ -2,6 +2,8 @@
 import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+
 
 function AddedQuestions() {
     const [loading, setLoading] = useState(false);
@@ -9,8 +11,17 @@ function AddedQuestions() {
     const [editMode, setEditMode] = useState({}); // Track edit mode for each question
     const router = useRouter();
     const [message, setMessage] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [selectedQuestion, setSelectedQuestion] = useState(null);
 
-
+    const handleView = (q) => {
+        setSelectedQuestion({ ...q });
+        setShowModal(true);
+    };
+    const handleClose = () => {
+        setShowModal(false);
+        setSelectedQuestion(null);
+    };
 
     const handleEdit = (index) => {
         setEditMode((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -146,13 +157,21 @@ function AddedQuestions() {
         <div className="text-white">
             <div className="flex justify-between">
                 <h2 className="text-xl font-bold my-4">Added Questions</h2>
-                <button
-                    onClick={handleSubmitApproval}
+                {questions?.length === 0 ? <button
+                    onClick={() => router.push("/admin/dashboard/addquestion")}
                     className="my-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                    disabled={loading}
+
                 >
-                    {loading ? "Redirecting..." : "Submit for Approval"}
-                </button>
+                    Add Questions
+                </button> :
+                    <button
+                        onClick={handleSubmitApproval}
+                        className="my-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        disabled={loading}
+                    >
+                        {loading ? "Redirecting..." : "Submit for Approval"}
+                    </button>}
+
             </div>
 
             {questions?.length === 0 ? (
@@ -199,6 +218,19 @@ function AddedQuestions() {
                                             )}
                                         </td>
                                         <td className="border p-2 text-white min-w-[200px] break-words whitespace-normal">
+                                            <button
+                                                onClick={() => handleView(q)}
+                                                disabled={q.status !== "draft"}
+                                                className={`px-3 py-1 rounded transition duration-300 ${q.status === "draft"
+                                                    ? "bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                                    }`}
+                                            >
+                                                View
+                                            </button>
+                                        </td>
+
+                                        {/* <td className="border p-2 text-white min-w-[200px] break-words whitespace-normal">
                                             {q.options?.length > 0 ? (
                                                 q.options.map((option, i) => (
                                                     <div key={i} className="mb-1">
@@ -226,7 +258,7 @@ function AddedQuestions() {
                                             ) : (
                                                 <span className="text-white">{q.directAnswer}</span>
                                             )}
-                                        </td>
+                                        </td> */}
                                         <td className="border p-2 min-w-[150px] text-center">
                                             {q.status === "draft" ? (
                                                 <>
@@ -265,6 +297,93 @@ function AddedQuestions() {
                     </div>
                 </div>
             )}
+            {showModal && selectedQuestion && (
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.5, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg p-6 w-[90%] md:w-[600px] shadow-2xl relative"
+                    >
+                        <h2 className="text-xl font-bold mb-4">Question Details</h2>
+
+                        <label className="block mb-2">Question:</label>
+                        <input
+                            className="w-full p-2 border rounded mb-4 bg-white text-black dark:bg-gray-700 dark:text-white"
+                            value={selectedQuestion.questionText}
+                            onChange={(e) => setSelectedQuestion({ ...selectedQuestion, questionText: e.target.value })}
+                        />
+
+                        <label className="block mb-2">Options:</label>
+                        {selectedQuestion.options?.map((opt, i) => (
+                            <input
+                                key={i}
+                                className="w-full p-2 border rounded mb-2 bg-white text-black dark:bg-gray-700 dark:text-white"
+                                value={opt}
+                                onChange={(e) => {
+                                    const updated = [...selectedQuestion.options];
+                                    updated[i] = e.target.value;
+                                    setSelectedQuestion({ ...selectedQuestion, options: updated });
+                                }}
+                            />
+                        ))}
+
+                        <label className="block mb-2">Explanation:</label>
+                        <textarea
+                            rows="3"
+                            className="w-full p-2 border rounded mb-4 bg-white text-black dark:bg-gray-700 dark:text-white"
+                            value={selectedQuestion.answerExplanation || ""}
+                            onChange={(e) => setSelectedQuestion({ ...selectedQuestion, answerExplanation: e.target.value })}
+                        />
+
+                        <div className="flex justify-end gap-4">
+                            <motion.button
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Close
+                            </motion.button>
+
+                            <motion.button
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                onClick={async () => {
+                                    try {
+                                        const token = localStorage.getItem("operatorToken");
+                                        const res = await axios.put(
+                                            `/api/admin/updatesinglequestion/${selectedQuestion._id}`,
+                                            selectedQuestion,
+                                            { headers: { Authorization: `Bearer ${token}` } }
+                                        );
+                                        if (res.data.success) {
+                                            alert("Updated successfully!");
+                                            setShowModal(false);
+                                            await fetchUpdatedQuestions();
+                                        } else {
+                                            alert("Update failed.");
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert("Error while updating.");
+                                    }
+                                }}
+                            >
+                                Update
+                            </motion.button>
+                        </div>
+
+                        <button
+                            onClick={() => setShowModal(false)}
+                            className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-white"
+                        >
+                            &times;
+                        </button>
+                    </motion.div>
+                </div>
+            )}
+
         </div>
 
     );
@@ -276,216 +395,3 @@ export default AddedQuestions;
 
 
 
-
-
-// 'use client';
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
-
-// function AddedQuestions() {
-//     const [loading, setLoading] = useState(false);
-//     const [questionList, setQuestionList] = useState([]);
-//     const [editMode, setEditMode] = useState({});
-//     const router = useRouter();
-
-//     useEffect(() => {
-//         const storedQuestions = JSON.parse(localStorage.getItem("addedQuestions")) || [];
-//         setQuestionList(storedQuestions);
-//     }, []);
-
-//     const handleEdit = (index) => {
-//         setEditMode((prev) => ({ ...prev, [index]: !prev[index] }));
-//     };
-
-//     const handleUpdate = async (index) => {
-//         const updatedData = questionList[index];
-//         if (!updatedData._id) {
-//             alert("Question ID is missing.");
-//             return;
-//         }
-//         try {
-//             const response = await axios.put(`/api/admin/updatesinglequestion/${updatedData._id}`, updatedData);
-//             if (response.data.success) {
-//                 alert("Question updated successfully!");
-//                 const updatedQuestions = [...questionList];
-//                 updatedQuestions[index] = response.data.question;
-//                 setQuestionList(updatedQuestions);
-//                 setEditMode((prev) => ({ ...prev, [index]: false }));
-//             } else {
-//                 alert(response.data.message);
-//             }
-//         } catch (error) {
-//             console.error("Error updating question:", error);
-//             alert("Failed to update question.");
-//         }
-//     };
-
-//     const handleChange = (e, index) => {
-//         const { name, value } = e.target;
-//         const updatedQuestions = [...questionList];
-//         updatedQuestions[index] = { ...updatedQuestions[index], [name]: value };
-//         setQuestionList(updatedQuestions);
-//     };
-
-//     const deleteQuestion = async (id) => {
-//         try {
-//             const response = await axios.delete(`/api/admin/deletequestion/${id}`);
-//             if (response.status === 200) {
-//                 const updatedQuestions = questionList.filter((q) => q._id !== id);
-//                 setQuestionList(updatedQuestions);
-//                 localStorage.setItem("addedQuestions", JSON.stringify(updatedQuestions));
-//                 alert("Question deleted successfully!");
-//             } else {
-//                 alert("Failed to delete question.");
-//             }
-//         } catch (error) {
-//             console.error("Error deleting question:", error);
-//             alert("Failed to delete question. Please try again.");
-//         }
-//     };
-
-//     const handleSubmitApproval = () => {
-//         setLoading(true);
-//         router.push("/admin/dashboard/pageforappruve");
-//     };
-
-//     return (
-//         <div className="text-white p-4 max-w-5xl mx-auto">
-//             <div className="flex flex-col md:flex-row justify-between items-center">
-//                 <h2 className="text-xl font-bold mb-4 md:mb-0">Added Questions</h2>
-//                 <button
-//                     onClick={handleSubmitApproval}
-//                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-//                     disabled={loading}
-//                 >
-//                     {loading ? "Redirecting..." : "Submit for Approval"}
-//                 </button>
-//             </div>
-
-//             {questionList.length === 0 ? (
-//                 <h1 className="text-center mt-6">No Questions Added</h1>
-//             ) : (
-//                 <div className="overflow-x-auto max-h-[32em] overflow-y-auto mt-4">
-//                     <table className="w-full border-collapse border border-gray-300 text-sm md:text-base">
-//                         <thead>
-//                             <tr className="bg-gray-800 text-white">
-//                                 <th className="border p-2">SubCategory</th>
-//                                 <th className="border p-2">Question</th>
-//                                 <th className="border p-2">Options</th>
-//                                 <th className="border p-2">Actions</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody>
-//                             {questionList.map((q, index) => (
-//                                 <tr key={q._id || index} className="border bg-gray-900 text-white">
-//                                     <td className="border p-2">
-//                                         {editMode[index] ? (
-//                                             <input
-//                                                 type="text"
-//                                                 name="subCategory"
-//                                                 value={q.subCategory}
-//                                                 onChange={(e) => handleChange(e, index)}
-//                                                 className="p-1 border bg-gray-700 text-white w-full"
-//                                             />
-//                                         ) : (
-//                                             q.subCategory
-//                                         )}
-//                                     </td>
-//                                     <td className="border p-2">
-//                                         {editMode[index] ? (
-//                                             <input
-//                                                 type="text"
-//                                                 name="questionText"
-//                                                 value={q.questionText}
-//                                                 onChange={(e) => handleChange(e, index)}
-//                                                 className="p-1 border bg-gray-700 text-white w-full"
-//                                             />
-//                                         ) : (
-//                                             q.questionText
-//                                         )}
-//                                     </td>
-//                                     <td className="border p-2">
-//                                         {q.options?.length > 0 ? (
-//                                             q.options.map((option, i) => (
-//                                                 <div key={i} className="mb-1">
-//                                                     {editMode[index] ? (
-//                                                         <input
-//                                                             type="text"
-//                                                             value={option}
-//                                                             onChange={(e) => {
-//                                                                 const updatedOptions = [...q.options];
-//                                                                 updatedOptions[i] = e.target.value;
-//                                                                 handleChange({ target: { name: 'options', value: updatedOptions } }, index);
-//                                                             }}
-//                                                             className="p-1 border bg-gray-700 text-white w-full"
-//                                                         />
-//                                                     ) : (
-//                                                         option
-//                                                     )}
-//                                                 </div>
-//                                             ))
-//                                         ) : (
-//                                             <span>{q.directAnswer}</span>
-//                                         )}
-//                                     </td>
-//                                     {/* <td className="border p-2 flex flex-col md:flex-row gap-2">
-//                                         {editMode[index] ? (
-//                                             <button
-//                                                 onClick={() => handleUpdate(index)}
-//                                                 className="bg-green-500 text-white p-1 rounded"
-//                                             >
-//                                                 Update
-//                                             </button>
-//                                         ) : (
-//                                             <button
-//                                                 onClick={() => handleEdit(index)}
-//                                                 className="bg-yellow-500 text-white p-1 rounded"
-//                                             >
-//                                                 Edit
-//                                             </button>
-//                                         )}
-//                                         <button
-//                                             onClick={() => deleteQuestion(q._id || index)}
-//                                             className="bg-red-500 text-white p-1 rounded"
-//                                         >
-//                                             Delete
-//                                         </button>
-//                                     </td> */}
-//                                     <td className="border p-2">
-//                                         {editMode[index] ? (
-//                                             <button
-//                                                 onClick={() => handleUpdate(index)}
-//                                                 className="bg-green-500 text-white p-1 rounded mr-2"
-//                                                 disabled={questions.some(item => item._id === q._id)}
-//                                             >
-//                                                 Update
-//                                             </button>
-//                                         ) : (
-//                                             <button
-//                                                 onClick={() => handleEdit(index)}
-//                                                 className="bg-yellow-500 text-white p-1 rounded mr-2"
-//                                                 disabled={questions.some(item => item._id === q._id)}
-//                                             >
-//                                                 Edit
-//                                             </button>
-//                                         )}
-//                                         <button
-//                                             onClick={() => deleteQuestion(q._id || index)}
-//                                             className="bg-red-500 text-white p-1 rounded"
-//                                             disabled={questions.some(item => item._id === q._id)}
-//                                         >
-//                                             Delete
-//                                         </button>
-//                                     </td>
-//                                 </tr>
-//                             ))}
-//                         </tbody>
-//                     </table>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// }
-
-// export default AddedQuestions;

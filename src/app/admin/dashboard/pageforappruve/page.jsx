@@ -288,18 +288,19 @@ function ApprovalPage() {
         const info = localStorage.getItem("operatorInfo");
         const parsedInfo = JSON.parse(info);
         const operatorId = parsedInfo?.operatorId;
+        setLoading(true)
 
         if (!token || !operatorId) {
             setMessage("Authentication token or Operator ID is missing.");
             return;
         }
-
         try {
             const response = await axios.get(`/api/admin/getOperatorQuestions/${operatorId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             if (response.status === 200) {
+                setLoading(false)
                 const allQuestions = response.data.questions;
 
                 setQuestions(allQuestions); // ✅ Save full list always
@@ -474,7 +475,7 @@ function ApprovalPage() {
                 ))}
             </div>
 
-            {filteredQuestions.length === 0 ? (
+            {/* {filteredQuestions.length === 0 ? (
                 <p className="text-center">No questions found.</p>
             ) : (
                 <div className="max-h-96 overflow-y-auto border border-gray-600 rounded-md">
@@ -517,7 +518,62 @@ function ApprovalPage() {
                         </tbody>
                     </table>
                 </div>
+            )} */}
+            {loading ? (
+                <div className="flex justify-center items-center h-40">
+                    <div className="w-10 h-10 border-4 border-dashed rounded-full animate-spin border-blue-500"></div>
+                </div>
+            ) : filteredQuestions?.length === 0 ? (
+                <p className="text-center text-gray-400">No questions found.</p>
+            ) : (
+                <div className="max-h-96 overflow-y-auto border border-gray-600 rounded-md">
+                    <table className="min-w-full table-auto text-sm">
+                        <thead className="bg-gray-800 sticky top-0">
+                            <tr>
+                                <th className="border p-2">Select</th>
+                                <th className="border p-2">Question</th>
+                                <th className="border p-2">Status</th>
+                                <th className="border p-2">Created At</th>
+                                <th className="border p-2">Rejection Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredQuestions?.map((q) => (
+                                <tr key={q._id} className="border bg-gray-700 hover:bg-gray-600">
+                                    <td className="border p-2 text-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedQuestions.includes(q._id)}
+                                            onChange={() => handleSelectQuestion(q._id)}
+                                            disabled={
+                                                q.status === "pending" ||
+                                                q.status === "approved" ||
+                                                q.status === "rejected"
+                                            }
+                                            className="cursor-pointer disabled:opacity-50"
+                                        />
+                                    </td>
+                                    <td className="border p-2">{q.questionText}</td>
+                                    <td className="border p-2">
+                                        {q.status === "approved"
+                                            ? "✅ Approved"
+                                            : q.status === "rejected"
+                                                ? "❌ Rejected"
+                                                : q.status === "pending"
+                                                    ? "⏳ Pending"
+                                                    : "📄 Draft"}
+                                    </td>
+                                    <td className="border p-2">
+                                        {new Date(q.createdAt).toLocaleString()}
+                                    </td>
+                                    <td className="border p-2">{q.rejectionReason || ""}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
+
 
             <button
                 onClick={handleSubmitApproval}

@@ -78,15 +78,16 @@ const AdminLogin = () => {
     });
     const [error, setError] = useState("");
     const router = useRouter();
-    // const baseURL = 'http://localhost:3000/api';
+    const baseURL = 'http://localhost:3000/api';
     // const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     // // const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
-    // console.log(baseURL, 'baseURL');
-    const baseURL =
-        process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-        (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-            ? 'http://localhost:5000/api'
-            : '');
+    // const baseURL =
+    // process.env.NEXT_PUBLIC_BACKEND_URL ||
+    // (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    //     ? 'http://localhost:5000/api'
+    //         : 'https://student-test-one.vercel.app/api')
+
+    console.log(baseURL, 'baseURL');
 
     // Handle form input changes
     const handleChange = (e) => {

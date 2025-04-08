@@ -130,11 +130,13 @@ import Fuse from "fuse.js";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 
-export default function SearchBar({ isExpanded, setIsExpanded }) {
+export default function SearchBar() {
+    const [isExpanded, setIsExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [data, setData] = useState([]);
     const [fuse, setFuse] = useState(null);
+
 
     const dropdownRef = useRef(null);
 

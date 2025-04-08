@@ -137,7 +137,7 @@ const SectionForm = () => {
         <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             {/* <pre>{JSON.stringify(questions, null, 2)}</pre> */}
             {message && <p className="text-center mt-4 text-green-500">{message}</p>}
-            <h2 className="text-2xl font-bold mb-4">Create Section</h2>
+            <h2 className="text-2xl text-center font-bold mb-4">Create Section</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block font-medium">Category</label>
@@ -181,7 +181,7 @@ const SectionForm = () => {
                         <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Next</button>
                     </div>
                 </div>
-                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition" disabled={loading}>
+                <button type="submit" className="w-full bg-gray-700 hover:bg-gray-800 text-white py-3 rounded  transition" disabled={loading}>
                     {loading ? 'Creating Section...' : 'Create Section'}
                 </button>
 

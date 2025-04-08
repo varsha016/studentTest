@@ -13,8 +13,8 @@ export default function OperatorLoginPage() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
-    const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const baseURL = 'http://localhost:3000/api';
+    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -37,7 +37,7 @@ export default function OperatorLoginPage() {
                 <h1 className="text-2xl font-bold mb-6">Operator Login</h1>
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    <input
+                    {/* <input
                         name="name"
                         type="text"
                         placeholder="name"
@@ -45,7 +45,7 @@ export default function OperatorLoginPage() {
                         onChange={handleChange}
                         className="w-full p-3 mb-4 border rounded"
                         required
-                    />
+                    /> */}
                     <input
                         name="email"
                         type="email"
