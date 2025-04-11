@@ -34,26 +34,40 @@ export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
     //     };
     //     fetchSubCategories();
     // }, []);
-    useEffect(() => {
-        const fetchSubcategories = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/admin/getallsubcategory`);
-                if (!response.ok) throw new Error('Failed to fetch subcategories');
+    // useEffect(() => {
+    //     const fetchSubcategories = async () => {
+    //         try {
+    //             setLoading(true);
+    //             const response = await fetch(`/api/admin/getallsubcategory`);
+    //             if (!response.ok) throw new Error('Failed to fetch subcategories');
 
-                const data = await response.json();
-                // Handle both array and object response formats
-                const subcategoriesData = data?.subcategories || data?.data || data || [];
-                setSubCategories(Array.isArray(subcategoriesData) ? subcategoriesData : []);
+    //             const data = await response.json();
+    //             // Handle both array and object response formats
+    //             const subcategoriesData = data?.subcategories || data?.data || data || [];
+    //             setSubCategories(Array.isArray(subcategoriesData) ? subcategoriesData : []);
+    //         } catch (error) {
+    //             console.error("Error fetching subcategories:", error);
+    //             setSubCategories([]);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchSubcategories();
+    // }, []);
+    useEffect(() => {
+        setLoading(true);
+        const fetchSubCategories = async () => {
+            try {
+                const res = await axios.get("/api/admin/getallsubcategory");
+                setSubCategories(res.data.subcategories);
             } catch (error) {
                 console.error("Error fetching subcategories:", error);
-                setSubCategories([]);
             } finally {
                 setLoading(false);
             }
         };
-
-        fetchSubcategories();
+        fetchSubCategories();
     }, []);
 
     const handleChange = (e) => {
