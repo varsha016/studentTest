@@ -36,7 +36,12 @@ const SavedPage = () => {
                     {savedQuestions.map((question, index) => (
                         <div key={`${index}-${question.questionText}`} className="bg-white p-6 rounded-lg shadow-md">
                             <h2 className="text-lg font-semibold mb-2">
-                                Q{index + 1}: {question.questionText}
+                                {/* Q{index + 1}: {question.questionText} */}
+                                Q{startIndex + index + 1}:{" "}
+                                <span
+                                    className="prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: question?.questionText }}
+                                />
                             </h2>
                             {question.questionType === "mcq" ? (
                                 <ul className="space-y-2">
