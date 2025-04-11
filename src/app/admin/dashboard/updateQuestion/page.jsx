@@ -15,7 +15,7 @@ export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
         subCategory: question?.subCategory,
         questionText: question?.questionText,
         questionType: question?.questionType,
-        options: [...question?.options],
+        options: [...(question?.options || [])], // Ensure options is always an array
         correctOptionIndex: question?.correctOptionIndex,
         directAnswer: question?.directAnswer || "",
         answerExplanation: question?.answerExplanation,
