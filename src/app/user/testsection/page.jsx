@@ -2,13 +2,10 @@
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowUp, Check, X, Save, BookOpen } from "lucide-react";
 import jsPDF from "jspdf";
 import Loading from "../Loading/page";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
 
 const SectionPageContent = () => {
     const searchParams = useSearchParams();
@@ -169,8 +166,6 @@ const SectionPageContent = () => {
         setCurrentPage(page);
     };
 
-
-
     const downloadQuestions = async () => {
         setDownloading(true); // start loading
         toast.info("Preparing your download...", {
@@ -237,14 +232,12 @@ const SectionPageContent = () => {
         return tempDiv.textContent || tempDiv.innerText || "";
     }
 
-
     return (
-        <div className="flex h-screen">
-            <div className="p-6 bg-gray-100 rounded-lg shadow-sm max-w-md mx-auto overflow-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Sub Categories</h2>
-
+        <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-r from-gray-100 to-gray-200">
+            {/* Sidebar */}
+            <div className="lg:w-1/4 w-full p-6 bg-white shadow-md overflow-auto">
+                <h2 className="text-2xl font-bold text-blue-600 mb-4">Sub Categories</h2>
                 {loading ? (
-                    // Skeleton Loader
                     <ul className="space-y-2">
                         {Array.from({ length: 5 }).map((_, index) => (
                             <li
@@ -258,7 +251,7 @@ const SectionPageContent = () => {
                         {subcategories?.map((category) => (
                             <li
                                 key={category._id}
-                                className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition duration-300"
+                                className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
                             >
                                 {category.name}
                             </li>
@@ -269,35 +262,39 @@ const SectionPageContent = () => {
                 )}
             </div>
 
-
-            <main className="w-3/4 p-6 bg-gray-200 overflow-y-scroll flex flex-col items-center">
+            {/* Main Content */}
+            <main className="lg:w-3/4 w-full p-6 bg-gray-50 overflow-y-scroll">
                 {loading && <Loading />}
-                <h2 className="text-lg font-bold mb-4">Each Section Contains Maximum 50 Questions</h2>
-                <aside>
-                    <ul className="flex gap-3">
-                        {sections?.length > 0 ? (
-                            sections?.map((section) => (
-                                <li
-                                    key={section._id}
-                                    className={`p-2 font-bold rounded cursor-pointer ${selectedSection?._id === section._id ? "bg-blue-500 text-white" : "bg-gray-300"}`}
-                                    onClick={() => handleSectionClick(section)}
-                                >
-                                    {section.name}
-                                </li>
-                            ))
-                        ) : (
-                            <p className="text-gray-500"> Wait for the sections to load.</p>
-                        )}
-                    </ul>
+                <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                    Each Section Contains Maximum 50 Questions
+                </h2>
+                <aside className="flex flex-wrap gap-3 justify-center mb-6">
+                    {sections?.length > 0 ? (
+                        sections?.map((section) => (
+                            <button
+                                key={section._id}
+                                className={`px-4 py-2 font-bold rounded-lg transition-colors ${selectedSection?._id === section._id
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
+                                    }`}
+                                onClick={() => handleSectionClick(section)}
+                            >
+                                {section.name}
+                            </button>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">Wait for the sections to load.</p>
+                    )}
                 </aside>
-                <div className="w-full max-w-3xl mt-6">
+
+                <div className="w-full max-w-4xl mx-auto">
                     {selectedSection ? (
-                        <div className="w-full bg-white p-6 shadow-md rounded">
+                        <div className="bg-white p-6 shadow-lg rounded-lg">
                             {questions.length > 0 ? (
                                 <div>
                                     {displayedQuestions?.map((question, index) => (
                                         <div key={question._id} className="mb-6 border-b pb-4">
-                                            <p className="text-lg font-semibold">
+                                            <p className="text-lg font-semibold text-gray-800">
                                                 Q{startIndex + index + 1}:{" "}
                                                 <span
                                                     className="prose prose-sm max-w-none"
@@ -306,21 +303,20 @@ const SectionPageContent = () => {
                                             </p>
 
                                             {question.questionType === "direct" ? (
-                                                <ul className="mt-2 space-y-2">
-                                                    <li className="p-2 bg-gray-200 rounded">
-                                                        <label className="flex items-center space-x-2 w-full">
-                                                            <input
-                                                                type="text"
-                                                                className="w-full p-2 border rounded"
-                                                                placeholder="Enter your answer"
-                                                                value={answers[question._id] || ""}
-                                                                onChange={(e) =>
-                                                                    setAnswers((prev) => ({ ...prev, [question._id]: e.target.value }))
-                                                                }
-                                                            />
-                                                        </label>
-                                                    </li>
-                                                </ul>
+                                                <div className="mt-2">
+                                                    <input
+                                                        type="text"
+                                                        className="w-full p-2 border rounded-lg"
+                                                        placeholder="Enter your answer"
+                                                        value={answers[question._id] || ""}
+                                                        onChange={(e) =>
+                                                            setAnswers((prev) => ({
+                                                                ...prev,
+                                                                [question._id]: e.target.value,
+                                                            }))
+                                                        }
+                                                    />
+                                                </div>
                                             ) : (
                                                 <ul className="mt-2 space-y-2">
                                                     {question.options?.map((option, optIndex) => {
@@ -329,65 +325,72 @@ const SectionPageContent = () => {
                                                         return (
                                                             <li
                                                                 key={optIndex}
-                                                                className={`p-2 rounded ${isSelected ? (isCorrect ? "bg-green-100" : "bg-red-100") : "bg-gray-200"}`}
+                                                                className={`p-2 rounded-lg flex justify-between items-center ${isSelected
+                                                                        ? isCorrect
+                                                                            ? "bg-green-100"
+                                                                            : "bg-red-100"
+                                                                        : "bg-gray-200"
+                                                                    }`}
                                                             >
-                                                                <div className="flex justify-between">
-                                                                    <label className="flex items-center space-x-2">
-                                                                        <input
-                                                                            type="radio"
-                                                                            name={`mcq-${question._id}`}
-                                                                            value={option}
-                                                                            checked={isSelected}
-                                                                            onChange={() =>
-                                                                                setAnswers((prev) => ({ ...prev, [question._id]: option }))
-                                                                            }
-                                                                        />
-                                                                        <p>
-                                                                            <span className={`${isSelected && isCorrect ? "font-bold" : ""}`}>
-                                                                                {option}
-                                                                            </span>
-
-                                                                        </p>
-                                                                    </label>
-                                                                    {isSelected && (
-                                                                        <span>
-                                                                            {isCorrect ? <Check className="text-green-500" /> : <X className="text-red-500" />}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
+                                                                <label className="flex items-center space-x-2">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`mcq-${question._id}`}
+                                                                        value={option}
+                                                                        checked={isSelected}
+                                                                        onChange={() =>
+                                                                            setAnswers((prev) => ({
+                                                                                ...prev,
+                                                                                [question._id]: option,
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <span
+                                                                        className={`${isSelected && isCorrect ? "font-bold" : ""
+                                                                            }`}
+                                                                    >
+                                                                        {option}
+                                                                    </span>
+                                                                </label>
                                                             </li>
                                                         );
                                                     })}
                                                 </ul>
                                             )}
+
                                             <div className="flex gap-4 mt-4">
                                                 <button
                                                     onClick={() => handleShowExplanation(question._id)}
-                                                    className="flex items-center space-x-2  hover:bg-blue-500 rounded-sm bg-blue-100  py-1 px-1  roundedbg-blue-500 hover:text-white"
+                                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                                                 >
-                                                    {/* <BookOpen className="w-4 h-4" /> */}
-                                                    <span>Explanation</span>
+                                                    Explanation
                                                 </button>
                                                 <button
                                                     onClick={() => handleSaveQuestion(question)}
-                                                    className="flex items-center space-x-2  hover:bg-green-500 rounded-sm bg-green-100  py-1 px-1  roundedbg-green-500 hover:text-white"
+                                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                                                 >
-                                                    {/* <Save className="w-4 h-4" /> */}
-                                                    <span>Save</span>
+                                                    Save
                                                 </button>
                                             </div>
+
                                             {showExplanation[question._id] && (
-                                                <div className="mt-2 p-2 bg-gray-100 rounded">
-                                                    <p className="text-sm text-gray-700">{question.answerExplanation}</p>
+                                                <div className="mt-2 p-2 bg-gray-100 rounded-lg">
+                                                    <p className="text-sm text-gray-700">
+                                                        {question.answerExplanation}
+                                                    </p>
                                                 </div>
                                             )}
                                         </div>
                                     ))}
-                                    <div className="flex justify-between mt-4">
+
+                                    <div className="flex justify-between mt-6">
                                         <button
                                             onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
                                             disabled={currentPage === 0}
-                                            className={`px-4 py-2 ${currentPage === 0 ? "bg-gray-300" : "bg-blue-500 text-white"} rounded`}
+                                            className={`px-4 py-2 rounded-lg ${currentPage === 0
+                                                    ? "bg-gray-300 cursor-not-allowed"
+                                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                                }`}
                                         >
                                             Previous
                                         </button>
@@ -395,7 +398,10 @@ const SectionPageContent = () => {
                                             <button
                                                 key={index}
                                                 onClick={() => handlePageClick(index)}
-                                                className={`px-4 py-2 rounded ${currentPage === index ? "bg-blue-500 text-white" : "bg-gray-300"}`}
+                                                className={`px-4 py-2 rounded-lg ${currentPage === index
+                                                        ? "bg-blue-500 text-white"
+                                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
+                                                    }`}
                                             >
                                                 {index + 1}
                                             </button>
@@ -403,39 +409,39 @@ const SectionPageContent = () => {
                                         <button
                                             onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
                                             disabled={currentPage === totalPages - 1}
-                                            className={`px-4 py-2 ${currentPage === totalPages - 1 ? "bg-gray-300" : "bg-blue-500 text-white"} rounded`}
+                                            className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
+                                                    ? "bg-gray-300 cursor-not-allowed"
+                                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                                }`}
                                         >
                                             Next
                                         </button>
-
                                     </div>
                                 </div>
                             ) : (
-                                <p>No questions available.</p>
+                                <p className="text-center text-gray-500">No questions available.</p>
                             )}
                         </div>
                     ) : (
-                        <p className="animate-pulse text-lg text-cyan-400 font-semibold text-center mt-4">
-                            <span>Select a section to begin.</span>
+                        <p className="text-center text-lg text-gray-500 mt-4">
+                            Select a section to begin.
                         </p>
                     )}
-                    <div>
+                    <div className="mt-6 text-center">
                         <button
                             onClick={downloadQuestions}
-                            className="px-4 py-2 mt-3 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
                             disabled={downloading}
                         >
                             {downloading ? "Downloading..." : "Download Questions as PDF"}
                         </button>
-
-
                     </div>
                 </div>
             </main>
-
         </div>
     );
 };
+
 const SectionPage = () => (
     <Suspense fallback={<p>Loading...</p>}>
         <SectionPageContent />
