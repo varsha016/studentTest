@@ -9,58 +9,28 @@ import "react-toastify/dist/ReactToastify.css";
 import TiptapEditor from "@/components/TiptapEditor";
 
 export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
+    console.log("Question:", question);
+
     const [questionData, setQuestionData] = useState({
-        subCategory: question.subCategory,
-        questionText: question.questionText,
-        questionType: question.questionType,
-        options: [...question.options],
-        correctOptionIndex: question.correctOptionIndex,
-        directAnswer: question.directAnswer || "",
-        answerExplanation: question.answerExplanation,
+        subCategory: question?.subCategory,
+        questionText: question?.questionText,
+        questionType: question?.questionType,
+        options: [...question?.options],
+        correctOptionIndex: question?.correctOptionIndex,
+        directAnswer: question?.directAnswer || "",
+        answerExplanation: question?.answerExplanation,
     });
 
     const [subCategories, setSubCategories] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchSubCategories = async () => {
-    //         try {
-    //             const res = await axios.get("/api/admin/getallsubcategory");
 
-    //             setSubCategories(res.data.subcategories);
-    //         } catch (error) {
-    //             console.error("Error fetching subcategories:", error);
-    //         }
-    //     };
-    //     fetchSubCategories();
-    // }, []);
-    // useEffect(() => {
-    //     const fetchSubcategories = async () => {
-    //         try {
-    //             setLoading(true);
-    //             const response = await fetch(`/api/admin/getallsubcategory`);
-    //             if (!response.ok) throw new Error('Failed to fetch subcategories');
-
-    //             const data = await response.json();
-    //             // Handle both array and object response formats
-    //             const subcategoriesData = data?.subcategories || data?.data || data || [];
-    //             setSubCategories(Array.isArray(subcategoriesData) ? subcategoriesData : []);
-    //         } catch (error) {
-    //             console.error("Error fetching subcategories:", error);
-    //             setSubCategories([]);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchSubcategories();
-    // }, []);
     useEffect(() => {
         setLoading(true);
         const fetchSubCategories = async () => {
             try {
                 const res = await axios.get("/api/admin/getallsubcategory");
-                setSubCategories(res.data.subcategories);
+                setSubCategories(res?.data?.subcategories);
             } catch (error) {
                 console.error("Error fetching subcategories:", error);
             } finally {
@@ -146,7 +116,7 @@ export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
                                 <option value="">Select SubCategory</option>
                                 {subCategories?.map((sub) => (
                                     <option key={sub._id} value={sub._id}>
-                                        {sub.name}
+                                        {sub?.name}
                                     </option>
                                 ))}
                             </select>

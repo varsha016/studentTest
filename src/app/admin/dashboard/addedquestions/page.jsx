@@ -32,7 +32,7 @@ function AddedQuestions() {
     const fetchSubCategories = async () => {
       try {
         const res = await axios.get("/api/admin/getallsubcategory");
-        setSubCategories(res.data.subcategories);
+        setSubCategories(res?.data?.subcategories);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
       }
@@ -42,8 +42,8 @@ function AddedQuestions() {
 
   // Helper function to get subcategory name
   const getSubCategoryName = (subCategoryId) => {
-    const subCategory = subCategories.find(sub => sub._id === subCategoryId);
-    return subCategory ? subCategory.name : 'Unknown';
+    const subCategory = subCategories?.find(sub => sub._id === subCategoryId);
+    return subCategory ? subCategory?.name : 'Unknown';
   };
 
   const handleView = (q) => {
@@ -216,7 +216,7 @@ function AddedQuestions() {
                     {q.subCategory}
                   </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {getSubCategoryName(q.subCategory)}
+                    {getSubCategoryName(q?.subCategory)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900 max-w-xs">
                     <div
