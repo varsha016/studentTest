@@ -22,16 +22,38 @@ export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
     const [subCategories, setSubCategories] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // useEffect(() => {
+    //     const fetchSubCategories = async () => {
+    //         try {
+    //             const res = await axios.get("/api/admin/getallsubcategory");
+
+    //             setSubCategories(res.data.subcategories);
+    //         } catch (error) {
+    //             console.error("Error fetching subcategories:", error);
+    //         }
+    //     };
+    //     fetchSubCategories();
+    // }, []);
     useEffect(() => {
-        const fetchSubCategories = async () => {
+        const fetchSubcategories = async () => {
             try {
-                const res = await axios.get("/api/admin/getallsubcategory");
-                setSubCategories(res.data.subcategories);
+                setLoading(true);
+                const response = await fetch(`/api/admin/getallsubcategory`);
+                if (!response.ok) throw new Error('Failed to fetch subcategories');
+
+                const data = await response.json();
+                // Handle both array and object response formats
+                const subcategoriesData = data?.subcategories || data?.data || data || [];
+                setSubCategories(Array.isArray(subcategoriesData) ? subcategoriesData : []);
             } catch (error) {
                 console.error("Error fetching subcategories:", error);
+                setSubCategories([]);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchSubCategories();
+
+        fetchSubcategories();
     }, []);
 
     const handleChange = (e) => {
@@ -102,13 +124,13 @@ export default function UpdateQuestionForm({ question, onUpdate, onCancel }) {
                             </label>
                             <select
                                 name="subCategory"
-                                value={questionData.subCategory}
+                                value={questionData?.subCategory}
                                 onChange={handleChange}
                                 className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 required
                             >
                                 <option value="">Select SubCategory</option>
-                                {subCategories.map((sub) => (
+                                {subCategories?.map((sub) => (
                                     <option key={sub._id} value={sub._id}>
                                         {sub.name}
                                     </option>
