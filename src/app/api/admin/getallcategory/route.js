@@ -1,8 +1,7 @@
-
-
 import connectDB from "../../../lib/db";
 import Category from "../../../models/admin/CategoryModel";
 import TitleCategory from "../../../models/admin/TitleCategoryModel";
+import { NextResponse } from "next/server";
 
 export async function GET(req) {
     try {
@@ -19,9 +18,16 @@ export async function GET(req) {
             categories = await Category.find().populate("titleCategory", "title");
         }
 
-        return new Response(JSON.stringify({ categories }), { status: 200 });
+        // Ensure we return a proper array
+        return NextResponse.json({
+            success: true,
+            data: Array.isArray(categories) ? categories : []
+        }, { status: 200 });
     } catch (error) {
-        console.error("Error fetching categories:", error.message);
-        return new Response(JSON.stringify({ message: "Internal Server Error", error: error.message }), { status: 500 });
+        return NextResponse.json({
+            success: false,
+            message: "Failed to fetch categories",
+            error: error.message
+        }, { status: 500 });
     }
 }

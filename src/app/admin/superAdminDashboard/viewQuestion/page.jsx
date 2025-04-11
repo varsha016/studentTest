@@ -5,6 +5,10 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Trash2, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+// import toast from 'react-hot-toast';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 
@@ -54,6 +58,7 @@ const ViewQuestions = () => {
         setPage(1);
     };
 
+
     const handleDelete = async (id) => {
         console.log(id, "ID");
 
@@ -63,8 +68,22 @@ const ViewQuestions = () => {
                 ...prev,
                 [openStatus]: prev[openStatus].filter((q) => q._id !== id),
             }));
+            toast.success("Question deleted successfully!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                // style: { backgroundColor: "red" }
+
+            });
+
         } catch (err) {
             console.error("Error deleting question:", err);
+            toast.error("Failed to delete question.");
         }
     };
 
@@ -156,9 +175,22 @@ const ViewQuestions = () => {
                                         >
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <p className="font-medium text-gray-800 mb-1">
-                                                        {index + 1 + (page - 1) * QUESTIONS_PER_PAGE}. {q.questionText}
-                                                    </p>
+                                                    {/* <p className="font-medium text-gray-800 mb-1">
+                                                        {index + 1 + (page - 1) * QUESTIONS_PER_PAGE}. {<div
+                                                            className="prose prose-sm max-w-none"
+                                                            dangerouslySetInnerHTML={{ __html: q.questionText }}
+                                                        />}
+                                                    </p> */}
+                                                    <div className="mb-1 text-gray-800 font-medium">
+                                                        <p className="font-medium text-gray-800">
+                                                            {index + 1 + (page - 1) * QUESTIONS_PER_PAGE}.
+                                                        </p>
+                                                        <div
+                                                            className="prose prose-sm max-w-none"
+                                                            dangerouslySetInnerHTML={{ __html: q.questionText }}
+                                                        />
+                                                    </div>
+
                                                     {q.questionType === "mcq" && (
                                                         <ul className="list-disc list-inside text-sm text-gray-600">
                                                             {q.options.map((opt, i) => (
@@ -173,13 +205,20 @@ const ViewQuestions = () => {
                                                     )}
                                                     {q.questionType === "direct" && (
                                                         <p className="text-sm text-blue-600 mt-1">
-                                                            Direct Answer: <strong>{q.directAnswer}</strong>
+                                                            Direct Answer: <strong><div
+                                                                className="prose prose-sm max-w-none"
+                                                                dangerouslySetInnerHTML={{ __html: q.directAnswer }}
+                                                            /></strong>
                                                         </p>
                                                     )}
                                                     {q.answerExplanation && (
-                                                        <p className="text-xs text-gray-500 mt-2 italic">
-                                                            Explanation: {q.answerExplanation}
-                                                        </p>
+                                                        <div
+                                                            className="prose prose-sm max-w-none"
+                                                            dangerouslySetInnerHTML={{ __html: q.answerExplanation }}
+                                                        />
+                                                        // <p className="text-xs text-gray-500 mt-2 italic">
+                                                        //     Explanation: {q.answerExplanation}
+                                                        // </p>
                                                     )}
                                                 </div>
 

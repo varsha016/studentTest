@@ -10,6 +10,7 @@ function page() {
     <div  >
       {/* <Navbar /> */}
       <MainHomePage />
+
       {/* <Footer /> */}
     </div>
   )

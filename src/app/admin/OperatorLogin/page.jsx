@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 export default function OperatorLoginPage() {
-    const [formData, setFormData] = useState({ name: "johndoe", email: 'johndoe@example.com', password: 'password123' });
+    const [formData, setFormData] = useState({ name: "john", email: 'john@gmail.com', password: '123' });
     const [error, setError] = useState('');
     const router = useRouter();
 
@@ -13,8 +13,8 @@ export default function OperatorLoginPage() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    // const baseURL = 'http://localhost:3000/api';
-    const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const baseURL = 'http://localhost:3000/api';
+    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');

@@ -111,11 +111,7 @@ export default function AddTitleCategory() {
                         placeholder="Enter title..."
                     />
                 </div>
-                {permissions.addQuestion === undefined ? (
-                    <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
-                        Loading permissions...
-                    </div>
-                ) : permissions.addQuestion ? (
+                {permissions.addTitleCategory ? (
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"

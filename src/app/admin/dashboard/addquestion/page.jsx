@@ -1,358 +1,297 @@
-
-
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
-// import TiptapEditor from "@/components/TiptapEditor"; // adjust path if needed
-
-
-
-// export default function AddQuestion() {
-//     const [questionData, setQuestionData] = useState({
-//         subCategory: "",
-//         questionText: "",
-//         questionType: "mcq",
-//         options: ["", "", "", ""],
-//         correctOptionIndex: 0,
-//         directAnswer: "",
-//         answerExplanation: "",
-//     });
-
-
-//     const [subCategories, setSubCategories] = useState([]);
-//     const router = useRouter();
-
-//     useEffect(() => {
-//         const fetchSubCategories = async () => {
-//             try {
-//                 const res = await axios.get("http://localhost:3000/api/admin/getallsubcategory");
-//                 setSubCategories(res.data);
-//             } catch (error) {
-//                 console.error("Error fetching subcategories:", error);
-//             }
-//         };
-//         fetchSubCategories();
-//     }, []);
-
-//     // const handleChange = (e) => {
-//     //     setQuestionData({ ...questionData, [e.target.name]: e.target.value });
-//     // };
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setQuestionData((prev) => ({ ...prev, [name]: value }));
-//     };
-
-//     const handleOptionChange = (index, value) => {
-//         const newOptions = [...questionData.options];
-//         newOptions[index] = value;
-//         setQuestionData({ ...questionData, options: newOptions });
-//     };
-//     const addQuestionToStorage = async () => {
-//         try {
-//             const token = localStorage.getItem("operatorToken"); // Retrieve the token from localStorage
-//             console.log(token, "token");
-
-//             if (!token) {
-//                 alert("Unauthorized: No token provided. Please login again.");
-//                 return;
-//             }
-
-//             const storedQuestions = JSON.parse(localStorage.getItem("addedQuestions")) || [];
-//             console.log(questionData, "questionData");
-
-//             const response = await axios.post(
-//                 "http://localhost:3000/api/admin/question",
-//                 questionData,
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${token}`, // Send token in Authorization header
-//                     },
-//                 }
-//             );
-
-//             console.log(response.data, "API Response");
-
-//             if (response.data && response.data.message === "Question added successfully") {
-//                 const newQuestion = response.data.data; // Ensure all fields are retrieved from API
-
-//                 if (!newQuestion || !newQuestion._id) {
-//                     console.error("Invalid API response, missing _id.");
-//                     alert("Error: Missing question ID from response.");
-//                     return;
-//                 }
-
-//                 // Add new question to localStorage
-//                 storedQuestions.push(newQuestion);
-//                 console.log(storedQuestions, "Updated storedQuestions");
-
-//                 localStorage.setItem("addedQuestions", JSON.stringify(storedQuestions));
-
-//                 alert("Question added successfully!");
-
-//                 // Reset form fields
-//                 setQuestionData({
-//                     subCategory: "",
-//                     questionText: "",
-//                     questionType: "mcq",
-//                     options: ["", "", "", ""],
-//                     correctOptionIndex: 0,
-//                     directAnswer: "",
-//                     answerExplanation: "",
-//                 });
-//             } else {
-//                 alert(response.data?.message || "Failed to add question. Please try again.");
-//             }
-
-//         } catch (error) {
-//             console.error("Error adding question:", error);
-//             alert(error.response?.data?.message || "An error occurred while adding the question.");
-//         }
-//     };
-
-
-
-//     return (
-//         <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
-//             {/* <pre>{JSON.stringify(questionData, null, 2)}</pre> */}
-//             <h2 className="text-2xl font-bold mb-4">Add Question</h2>
-//             <form className="space-y-4">
-//                 <select name="subCategory" value={questionData.subCategory} onChange={handleChange} className="w-full p-2 border rounded" required>
-//                     <option value="">Select SubCategory</option>
-//                     {subCategories.map((sub) => (
-//                         <option key={sub._id} value={sub._id}>{sub.name}</option>
-//                     ))}
-//                 </select>
-
-//                 <input type="text" name="questionText" placeholder="Enter Question" value={questionData.questionText} onChange={handleChange} className="w-full p-2 border rounded" required />
-
-//                 <select name="questionType" value={questionData.questionType} onChange={handleChange} className="w-full p-2 border rounded">
-//                     <option value="mcq">Multiple Choice (MCQ)</option>
-//                     <option value="direct">Direct Answer</option>
-//                 </select>
-
-//                 {questionData.questionType === "mcq" ? (
-//                     <div>
-//                         {questionData.options.map((option, index) => (
-//                             <div key={index} className="flex items-center gap-2">
-//                                 <input type="radio" name="correctOptionIndex" checked={questionData.correctOptionIndex === index} onChange={() => setQuestionData({ ...questionData, correctOptionIndex: index })} />
-//                                 <input type="text" placeholder={`Option ${index + 1}`} value={option} onChange={(e) => handleOptionChange(index, e.target.value)} className="w-full p-2 border rounded" required />
-//                             </div>
-//                         ))}
-//                     </div>
-//                 ) : (
-//                     <input type="text" name="directAnswer" placeholder="Enter Direct Answer" value={questionData.directAnswer} onChange={handleChange} className="w-full p-2 border rounded" required />
-//                 )}
-
-//                 <textarea name="answerExplanation" placeholder="Provide Explanation for the Answer" value={questionData.answerExplanation} onChange={handleChange} className="w-full p-2 border rounded" required />
-
-//                 <button type="button" onClick={addQuestionToStorage} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Add Question</button>
-//             </form>
-//         </div>
-//     );
-// }
-
-
-
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-// import RichTextEditor from "../TiptapEditor/page";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import dynamic from "next/dynamic";
+import TiptapEditor from "@/components/TiptapEditor";
 
-// Dynamically import RichTextEditor
-const RichTextEditor = dynamic(() => import('../../../components/RichTextEditor'), {
-    ssr: false,
-});
 export default function AddQuestion() {
-    const [questionData, setQuestionData] = useState({
-        subCategory: "",
-        questionText: "",
-        questionType: "mcq",
-        options: ["", "", "", ""],
-        correctOptionIndex: 0,
-        directAnswer: "",
-        answerExplanation: "",
-    });
+  const [questionData, setQuestionData] = useState({
+    subCategory: "",
+    questionText: "",
+    questionType: "mcq",
+    options: ["", "", "", ""],
+    correctOptionIndex: 0,
+    directAnswer: "",
+    answerExplanation: "",
+  });
 
-    const [subCategories, setSubCategories] = useState([]);
-    const router = useRouter();
+  const [subCategories, setSubCategories] = useState([]);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchSubCategories = async () => {
-            try {
-                const res = await axios.get("http://localhost:3000/api/admin/getallsubcategory");
-                setSubCategories(res.data);
-            } catch (error) {
-                console.error("Error fetching subcategories:", error);
-            }
-        };
-        fetchSubCategories();
-    }, []);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setQuestionData((prev) => ({ ...prev, [name]: value }));
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      try {
+        const res = await axios.get("/api/admin/getallsubcategory");
+        setSubCategories(res.data.subcategories);
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      }
     };
+    fetchSubCategories();
+  }, []);
 
-    const handleOptionChange = (index, value) => {
-        const newOptions = [...questionData.options];
-        newOptions[index] = value;
-        setQuestionData({ ...questionData, options: newOptions });
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setQuestionData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleOptionChange = (index, value) => {
+    const newOptions = [...questionData.options];
+    newOptions[index] = value;
+    setQuestionData({ ...questionData, options: newOptions });
+  };
 
-    const addQuestionToStorage = async () => {
-        try {
-            const token = localStorage.getItem("operatorToken");
-            if (!token) {
-                alert("Unauthorized: No token provided. Please login again.");
-                return;
-            }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("operatorToken");
+      if (!token) {
+        alert("Unauthorized: No token provided. Please login again.");
+        return;
+      }
 
-            const storedQuestions = JSON.parse(localStorage.getItem("addedQuestions")) || [];
+      const storedQuestions =
+        JSON.parse(localStorage.getItem("addedQuestions")) || [];
 
-            const response = await axios.post(
-                "http://localhost:3000/api/admin/question",
-                questionData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+      const response = await axios.post("/api/admin/question", questionData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            if (response.data?.message === "Question added successfully") {
-                const newQuestion = response.data.data;
-                if (!newQuestion?._id) {
-                    alert("Error: Missing question ID from response.");
-                    return;
-                }
-
-                storedQuestions.push(newQuestion);
-                localStorage.setItem("addedQuestions", JSON.stringify(storedQuestions));
-                alert("Question added successfully!");
-
-                setQuestionData({
-                    subCategory: "",
-                    questionText: "",
-                    questionType: "mcq",
-                    options: ["", "", "", ""],
-                    correctOptionIndex: 0,
-                    directAnswer: "",
-                    answerExplanation: "",
-                });
-            } else {
-                alert(response.data?.message || "Failed to add question. Please try again.");
-            }
-        } catch (error) {
-            console.error("Error adding question:", error);
-            alert(error.response?.data?.message || "An error occurred while adding the question.");
+      if (response.data?.message === "Question added successfully") {
+        const newQuestion = response.data.data;
+        if (!newQuestion?._id) {
+          alert("Error: Missing question ID from response.");
+          return;
         }
-    };
 
-    return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
-            <h2 className="text-2xl font-bold mb-4">Add Question</h2>
-            <form className="space-y-4">
-                <select
-                    name="subCategory"
-                    value={questionData.subCategory}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                >
-                    <option value="">Select SubCategory</option>
-                    {subCategories.map((sub) => (
-                        <option key={sub._id} value={sub._id}>
-                            {sub.name}
-                        </option>
-                    ))}
-                </select>
+        storedQuestions.push(newQuestion);
+        localStorage.setItem("addedQuestions", JSON.stringify(storedQuestions));
 
-                {/* 📝 TiptapEditor replaces the normal input */}
-                <div>
-                    <label className="font-medium">Question</label>
-                    <input type="text" name="questionText" placeholder="Enter Question" value={questionData.questionText} onChange={handleChange} className="w-full p-2 border rounded" required />
-                    {/* <RichTextEditor
-                        value={questionData.questionText}
-                        onChange={(newValue) =>
-                            setQuestionData((prev) => ({ ...prev, questionText: newValue }))
-                        }
-                    /> */}
-                </div>
+        toast.success("Question added successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => router.push("/admin/dashboard/addedquestions"),
+        });
 
-                <select
-                    name="questionType"
-                    value={questionData.questionType}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                >
-                    <option value="mcq">Multiple Choice (MCQ)</option>
-                    <option value="direct">Direct Answer</option>
-                </select>
+        setQuestionData({
+          subCategory: "",
+          questionText: "",
+          questionType: "mcq",
+          options: ["", "", "", ""],
+          correctOptionIndex: 0,
+          directAnswer: "",
+          answerExplanation: "",
+        });
+      } else {
+        alert(
+          response.data?.message || "Failed to add question. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error adding question:", error);
+      alert(
+        error.response?.data?.message ||
+        "An error occurred while adding the question."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                {questionData.questionType === "mcq" ? (
-                    <div className="space-y-2">
-                        {questionData.options.map((option, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                                <input
-                                    type="radio"
-                                    name="correctOptionIndex"
-                                    checked={questionData.correctOptionIndex === index}
-                                    onChange={() =>
-                                        setQuestionData((prev) => ({
-                                            ...prev,
-                                            correctOptionIndex: index,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="text"
-                                    placeholder={`Option ${index + 1}`}
-                                    value={option}
-                                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                                    className="w-full p-2 border rounded"
-                                    required
-                                />
-                            </div>
-                        ))}
-                    </div>
-                ) : (
+
+  // Function to fetch operator permissions
+  const [permissions, setPermissions] = useState({});
+  const [permissionsLoading, setPermissionsLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("");
+  useEffect(() => {
+    fetchLoggedInUser();
+  }, []);
+  const fetchLoggedInUser = () => {
+    const operator = JSON.parse(localStorage.getItem("operatorInfo"));
+    if (operator?.email) {
+      setUserEmail(operator.email);
+      fetchOperators(operator.email);
+    }
+  };
+
+  const fetchOperators = async (email) => {
+    try {
+      const response = await axios.get('/api/admin/getoperator');
+
+      if (response.data.length > 0) {
+        const loggedInOperator = response.data.find(op => op.email === email);
+        console.log("loggedInOperator", loggedInOperator);
+
+        if (loggedInOperator) {
+          setPermissions(loggedInOperator?.permissionId || {});
+        }
+      }
+    } catch (err) {
+      setMessage(`❌ ${err.response?.data?.message || err.message}`);
+    } finally {
+      setPermissionsLoading(false); // ✅ stop loading after fetch
+    }
+  };
+  console.log(permissions, "permissions");
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+          Add New Question
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                SubCategory
+              </label>
+              <select
+                name="subCategory"
+                value={questionData.subCategory}
+                onChange={handleChange}
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                required
+              >
+                <option value="">Select SubCategory</option>
+                {subCategories.map((sub) => (
+                  <option key={sub._id} value={sub._id}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Question
+              </label>
+              <TiptapEditor
+                value={questionData.questionText}
+                onChange={(newValue) => {
+                  setQuestionData((prev) => ({
+                    ...prev,
+                    questionText: newValue,
+                  }));
+                }}
+              />
+            </div>
+
+            {questionData.questionType === "mcq" ? (
+              <div className="space-y-2">
+                {questionData.options.map((option, index) => (
+                  <div key={index} className="flex items-center gap-2">
                     <input
-                        type="text"
-                        name="directAnswer"
-                        placeholder="Enter Direct Answer"
-                        value={questionData.directAnswer}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
-                        required
+                      type="radio"
+                      name="correctOptionIndex"
+                      checked={questionData.correctOptionIndex === index}
+                      onChange={() =>
+                        setQuestionData((prev) => ({
+                          ...prev,
+                          correctOptionIndex: index,
+                        }))
+                      }
                     />
-                )}
-
-                <textarea
-                    name="answerExplanation"
-                    placeholder="Provide Explanation for the Answer"
-                    value={questionData.answerExplanation}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
+                    <input
+                      type="text"
+                      placeholder={`Option ${index + 1}`}
+                      value={option}
+                      onChange={(e) =>
+                        handleOptionChange(index, e.target.value)
+                      }
+                      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      required
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Direct Answer
+                </label>
+                <input
+                  type="text"
+                  name="directAnswer"
+                  placeholder="Enter Direct Answer"
+                  value={questionData.directAnswer}
+                  onChange={handleChange}
+                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  required
                 />
+              </div>
+            )}
 
-                <button
-                    type="button"
-                    onClick={addQuestionToStorage}
-                    className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-                >
-                    Add Question
-                </button>
-            </form>
-        </div>
-    );
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Answer Explanation
+              </label>
+              <textarea
+                name="answerExplanation"
+                placeholder="Provide Explanation for the Answer"
+                value={questionData.answerExplanation}
+                onChange={handleChange}
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={() => router.push("/admin/dashboard/addedquestions")}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+
+            {permissionsLoading ? (
+              <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
+                Checking permissions...
+              </div>
+            ) : permissions.addQuestion ? (
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Question"
+                )}
+              </button>
+            ) : (
+              <div className="w-full text-red-500 px-4 py-2 rounded-md bg-red-100 transition">
+                You are not authorized to add Category
+              </div>
+            )}
+
+
+
+
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
-
-
-
-

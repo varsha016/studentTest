@@ -35,7 +35,11 @@ const ExamHome = () => {
                     const response = await axios.get(
                         `/api/admin/getallcategory?titleCategory=${titleCategory._id}`
                     );
-                    categoryData[titleCategory._id] = response.data.categories || [];
+                    const categories = response.data?.data;
+                    console.log(categories, "fetched categories for", titleCategory.title);
+
+                    categoryData[titleCategory._id] = Array.isArray(categories) ? categories : [];
+                    // categoryData[titleCategory._id] = response.data.categories || [];
                 })
             );
             setCategoriesByTitle(categoryData);

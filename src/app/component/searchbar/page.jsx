@@ -209,9 +209,14 @@ export default function SearchBar() {
                             <div
                                 key={index}
                                 className="p-3 hover:bg-blue-100 text-gray-600 cursor-pointer border-b last:border-none"
-                                onClick={() => alert(`You selected: ${item.questionText}`)}
+                                // onClick={() => alert(`You selected: ${item.questionText}`)}
+                                onClick={() => alert(`You selected: ${item.questionText.replace(/<[^>]+>/g, '')}`)}
                             >
-                                {item.questionText}
+                                <div
+                                    className="prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: item.questionText }}
+                                />
+                                {/* {item.questionText} */}
                             </div>
                         ))
                     ) : (

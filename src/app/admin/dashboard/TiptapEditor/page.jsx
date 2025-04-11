@@ -1,94 +1,83 @@
-// // "use client";
-
-// // import { useEditor, EditorContent } from "@tiptap/react";
-// // import StarterKit from "@tiptap/starter-kit";
-// // import Bold from "@tiptap/extension-bold";
-// // import Underline from "@tiptap/extension-underline";
-// // import Italic from "@tiptap/extension-italic";
-// // import React, { useEffect } from "react";
-
-// // // Custom Bold that renders with inline style
-// // const CustomBold = Bold.extend({
-// //     renderHTML({ HTMLAttributes }) {
-// //         return ["span", { ...HTMLAttributes, style: "font-weight: bold;" }, 0];
-// //     },
-// // });
-
-// // // Custom Underline with inline style
-// // const CustomUnderline = Underline.extend({
-// //     renderHTML({ HTMLAttributes }) {
-// //         return ["span", { ...HTMLAttributes, style: "text-decoration: underline;" }, 0];
-// //     },
-// // });
-
-// // // Custom Italic with inline style
-// // const CustomItalic = Italic.extend({
-// //     renderHTML({ HTMLAttributes }) {
-// //         return ["span", { ...HTMLAttributes, style: "font-style: italic;" }, 0];
-// //     },
-// // });
-
-// // export default function TiptapEditor({ value, onChange }) {
-// //     const editor = useEditor({
-// //         content: value || "",
-// //         extensions: [
-// //             StarterKit.configure({
-// //                 bold: false,
-// //                 italic: false,
-// //                 underline: false,
-// //             }),
-// //             CustomBold,
-// //             CustomUnderline,
-// //             CustomItalic,
-// //         ],
-// //         onUpdate: ({ editor }) => {
-// //             const html = editor.getHTML();
-
-// //             // Remove all HTML tags except inline styles
-// //             const cleaned = html
-// //                 .replace(/<\/?p>/g, "") // remove <p> tags
-// //                 .replace(/<(\/)?(strong|b|u|em|i)>/g, "") // remove bold/italic/underline tags
-// //                 .trim();
-
-// //             onChange(cleaned);
-// //         },
-// //     });
-
-// //     useEffect(() => {
-// //         if (editor && value !== editor.getHTML()) {
-// //             editor.commands.setContent(value);
-// //         }
-// //     }, [value, editor]);
-
-// //     if (!editor) return null;
-
-// //     return (
-// //         <div className="border rounded p-3">
-// //             <div className="flex gap-2 mb-3 flex-wrap">
-// //                 <button
-// //                     onClick={() => editor.chain().focus().toggleBold().run()}
-// //                     className="px-2 py-1 border rounded"
-// //                 >
-// //                     Bold
-// //                 </button>
-// //                 <button
-// //                     onClick={() => editor.chain().focus().toggleItalic().run()}
-// //                     className="px-2 py-1 border rounded"
-// //                 >
-// //                     Italic
-// //                 </button>
-// //                 <button
-// //                     onClick={() => editor.chain().focus().toggleUnderline().run()}
-// //                     className="px-2 py-1 border rounded"
-// //                 >
-// //                     Underline
-// //                 </button>
-// //             </div>
-
-// //             <EditorContent editor={editor} className="min-h-[120px] border p-2 rounded" />
-// //         </div>
-// //     );
-// // }
+"use client"
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Bold from "@tiptap/extension-bold";
+import Underline from "@tiptap/extension-underline";
+import Italic from "@tiptap/extension-italic";
+import React, { useEffect } from "react"
+// Custom Bold that renders with inline style
+const CustomBold = Bold.extend({
+    renderHTML({ HTMLAttributes }) {
+        return ["span", { ...HTMLAttributes, style: "font-weight: bold;" }, 0];
+    },
+})
+// Custom Underline with inline style
+const CustomUnderline = Underline.extend({
+    renderHTML({ HTMLAttributes }) {
+        return ["span", { ...HTMLAttributes, style: "text-decoration: underline;" }, 0];
+    },
+})
+// Custom Italic with inline style
+const CustomItalic = Italic.extend({
+    renderHTML({ HTMLAttributes }) {
+        return ["span", { ...HTMLAttributes, style: "font-style: italic;" }, 0];
+    },
+})
+export default function TiptapEditor({ value, onChange }) {
+    const editor = useEditor({
+        content: value || "",
+        extensions: [
+            StarterKit.configure({
+                bold: false,
+                italic: false,
+                underline: false,
+            }),
+            CustomBold,
+            CustomUnderline,
+            CustomItalic,
+        ],
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML()
+            // Remove all HTML tags except inline styles
+            const cleaned = html
+                .replace(/<\/?p>/g, "") // remove <p> tags
+                .replace(/<(\/)?(strong|b|u|em|i)>/g, "") // remove bold/italic/underline tags
+                .trim()
+            onChange(cleaned);
+        },
+    })
+    useEffect(() => {
+        if (editor && value !== editor.getHTML()) {
+            editor.commands.setContent(value);
+        }
+    }, [value, editor])
+    if (!editor) return null
+    return (
+        <div className="border rounded p-3">
+            <div className="flex gap-2 mb-3 flex-wrap">
+                <button
+                    onClick={() => editor.chain().focus().toggleBold().run()}
+                    className="px-2 py-1 border rounded"
+                >
+                    Bold
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().toggleItalic().run()}
+                    className="px-2 py-1 border rounded"
+                >
+                    Italic
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().toggleUnderline().run()}
+                    className="px-2 py-1 border rounded"
+                >
+                    Underline
+                </button>
+            </div>
+            <EditorContent editor={editor} className="min-h-[120px] border p-2 rounded" />
+        </div>
+    );
+}
 
 
 // "use client";
@@ -188,61 +177,61 @@
 //     );
 // }
 
-"use client";
+// "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
+// import dynamic from "next/dynamic";
+// import { useEffect, useState } from "react";
+// import { EditorState, convertToRaw, ContentState } from "draft-js";
+// import draftToHtml from "draftjs-to-html";
+// import htmlToDraft from "html-to-draftjs";
 
-// Dynamically import Editor only on client
-const Editor = dynamic(
-    () => import("react-draft-wysiwyg").then(mod => mod.Editor),
-    { ssr: false }
-);
+// // Dynamically import Editor only on client
+// const Editor = dynamic(
+//     () => import("react-draft-wysiwyg").then(mod => mod.Editor),
+//     { ssr: false }
+// );
 
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+// import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function RichTextEditor({ value = "", onChange }) {
-    const [editorState, setEditorState] = useState(() =>
-        EditorState.createEmpty()
-    );
-    const [isMounted, setIsMounted] = useState(false);
+// export default function RichTextEditor({ value = "", onChange }) {
+//     const [editorState, setEditorState] = useState(() =>
+//         EditorState.createEmpty()
+//     );
+//     const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+//     useEffect(() => {
+//         setIsMounted(true);
+//     }, []);
 
-    useEffect(() => {
-        if (isMounted && value) {
-            const blocksFromHtml = htmlToDraft(value);
-            const contentState = ContentState.createFromBlockArray(
-                blocksFromHtml.contentBlocks,
-                blocksFromHtml.entityMap
-            );
-            setEditorState(EditorState.createWithContent(contentState));
-        }
-    }, [isMounted, value]);
+//     useEffect(() => {
+//         if (isMounted && value) {
+//             const blocksFromHtml = htmlToDraft(value);
+//             const contentState = ContentState.createFromBlockArray(
+//                 blocksFromHtml.contentBlocks,
+//                 blocksFromHtml.entityMap
+//             );
+//             setEditorState(EditorState.createWithContent(contentState));
+//         }
+//     }, [isMounted, value]);
 
-    const handleEditorChange = (state) => {
-        setEditorState(state);
-        const htmlContent = draftToHtml(convertToRaw(state.getCurrentContent()));
-        onChange?.(htmlContent);
-    };
+//     const handleEditorChange = (state) => {
+//         setEditorState(state);
+//         const htmlContent = draftToHtml(convertToRaw(state.getCurrentContent()));
+//         onChange?.(htmlContent);
+//     };
 
-    if (!isMounted) return null;
+//     if (!isMounted) return null;
 
-    return (
-        <div className="border rounded p-4">
-            <Editor
-                editorState={editorState}
-                onEditorStateChange={handleEditorChange}
-                wrapperClassName="border rounded"
-                editorClassName="min-h-[200px] p-2"
-                toolbarClassName="border-b"
-            />
-        </div>
-    );
-}
+//     return (
+//         <div className="border rounded p-4">
+//             <Editor
+//                 editorState={editorState}
+//                 onEditorStateChange={handleEditorChange}
+//                 wrapperClassName="border rounded"
+//                 editorClassName="min-h-[200px] p-2"
+//                 toolbarClassName="border-b"
+//             />
+//         </div>
+//     );
+// }
 

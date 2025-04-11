@@ -72,8 +72,8 @@ import { useRouter } from "next/navigation";
 const AdminLogin = () => {
     // State to store username, email, and password
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",  // Example email, adjust as needed
+        username: "admin",
+        email: "admin@gmail.com",  // Example email, adjust as needed
         password: "123",  // Example password, adjust as needed
     });
     const [error, setError] = useState("");

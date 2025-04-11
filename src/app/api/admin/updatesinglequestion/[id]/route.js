@@ -24,7 +24,7 @@ export async function PUT(req, { params }) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         const updatedData = await req.json();
 
         const existingQuestion = await Question.findById(id);

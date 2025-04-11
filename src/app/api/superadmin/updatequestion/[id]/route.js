@@ -1,39 +1,65 @@
-import { NextResponse } from "next/server";
-import connectDB from "../../../../lib/db";
-import Question from "../../../../models/admin/QuestionModel";
-// import { authenticate } from "../../../../lib/auth";
+import { authenticate } from '../../../../lib/auth/auth';
+import dbConnect from '../../../../lib/db';
+import Question from '../../../../models/admin/QuestionModel';
+import { NextResponse } from 'next/server';
 
-export async function PUT(req, { params }) {
-    await connectDB();
+
+export async function PUT(request, { params }) {
+    await dbConnect();
+    await authenticate(request);
+
+    const { id } = params;
+    const body = await request.json();
 
     try {
-        // const admin = await authenticate(req);
-        const { id } = await params;
-        const updateData = await req.json();
+        const updateFields = {};
 
-        if (!id) {
-            return NextResponse.json({ success: false, message: "Question ID is required." }, { status: 400 });
+        if (body.questionText) updateFields.questionText = body.questionText;
+        if (body.options) updateFields.options = body.options;
+        if (body.correctOptionIndex !== undefined) updateFields.correctOptionIndex = body.correctOptionIndex;
+        if (body.directAnswer) updateFields.directAnswer = body.directAnswer;
+        if (body.answerExplanation) updateFields.answerExplanation = body.answerExplanation;
+        if (body.subCategory) updateFields.subCategory = body.subCategory;
+        if (body.status) updateFields.status = body.status;
+
+        updateFields.updatedAt = new Date();
+
+        const updated = await Question.findByIdAndUpdate(id, updateFields, { new: true });
+
+        if (!updated) {
+            return NextResponse.json({ error: 'Question not found.' }, { status: 404 });
         }
 
-        const question = await Question.findById(id);
-
-        if (!question) {
-            return NextResponse.json({ success: false, message: "Question not found." }, { status: 404 });
-        }
-
-        // Update question with provided fields
-        Object.keys(updateData).forEach((key) => {
-            if (updateData[key] !== undefined) {
-                question[key] = updateData[key];
-            }
-        });
-
-        question.updatedAt = new Date();
-        await question.save();
-
-        return NextResponse.json({ success: true, message: "Question updated successfully.", question }, { status: 200 });
-    } catch (error) {
-        console.error("Error updating question:", error);
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+        return NextResponse.json(updated, { status: 200 });
+    } catch (err) {
+        console.error('Update error:', err);
+        return NextResponse.json({ error: 'Failed to update question.' }, { status: 500 });
     }
 }
+
+
+
+// export async function PUT(request, { params }) {
+//     await dbConnect();
+//     await authenticate(request);
+
+//     const { id } = params;
+//     const body = await request.json();
+
+//     try {
+//         const updated = await Question.findByIdAndUpdate(
+//             id,
+//             {
+//                 question: body.question,
+//                 // options: body.options,
+//                 // answer: body.answer,
+//                 // subCategoryId: body.subCategoryId,
+//             },
+//             { new: true }
+//         );
+
+//         return NextResponse.json(updated, { status: 200 });
+//     } catch (err) {
+//         return NextResponse.json({ error: 'Failed to update question.' }, { status: 500 });
+//     }
+// }

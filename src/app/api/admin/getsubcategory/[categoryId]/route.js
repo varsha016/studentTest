@@ -1,8 +1,8 @@
 
 
 
-import connectDB from "../../../../lib/db";
-import SubCategory from "../../../../models/admin/SubCategoryModel";
+import connectDB from "../../../lib/db";
+import SubCategory from "../../../models/admin/SubCategoryModel";
 
 export async function GET(req, { params }) {
     try {

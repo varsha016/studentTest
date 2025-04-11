@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../lib/db";
 import Question from "../../../models/admin/QuestionModel";
-import { authenticate } from "@/app/lib/auth/auth";
+import { authenticate } from "../../../lib/auth/auth";
 
 export async function GET(req) {
     await connectDB();

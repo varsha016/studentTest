@@ -19,6 +19,8 @@ export default function AddCategory() {
 
     const fetchLoggedInUser = () => {
         const operator = JSON.parse(localStorage.getItem("operatorInfo")); // Assuming user data is stored in localStorage
+        console.log(operator, 'opwer');
+
         if (operator?.email) {
             setUserEmail(operator.email);
             fetchOperators(operator.email);
@@ -26,10 +28,14 @@ export default function AddCategory() {
     };
     // Function to fetch operator permissions
     const fetchOperators = async (email) => {
+        console.log(email, 'email');
+
         try {
             const response = await axios.get('/api/admin/getoperator');
 
+            console.log(response.data, 'RESPONSE');
             if (response.data.length > 0) {
+
                 const loggedInOperator = response.data.find(op => op.email === email);
                 console.log("loggedInOperator", loggedInOperator);
 
@@ -130,17 +136,13 @@ export default function AddCategory() {
                 </div>
 
                 {/* Submit Button */}
-                {permissions.addQuestion === undefined ? (
-                    <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
-                        Loading permissions...
-                    </div>
-                ) : permissions.addCategory ? (<button
+                {permissions.addCategory ? (<button
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
                 >
                     Add Category
                 </button>)
-                    : (<div className="w-full  text-red-500 px-4 rounded-md  transition">
+                    : (<div className="w-full  text-red-500 px-4 rounded-md bg-red-100  py-2 transition">
                         You are not authorized to add Title
                     </div>)
                 }
