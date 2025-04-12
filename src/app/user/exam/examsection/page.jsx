@@ -3,7 +3,6 @@
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import jsPDF from "jspdf";
 
 const SectionPageContent = () => {
     const searchParams = useSearchParams();
@@ -16,22 +15,11 @@ const SectionPageContent = () => {
     const [answers, setAnswers] = useState({});
     const [completedSections, setCompletedSections] = useState(new Set());
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [userId, setUserId] = useState(null);
-    const [userName, setUserName] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const questionsPerPage = 2;
 
     const router = useRouter();
-
-    // Fetch user data from localStorage
-    useEffect(() => {
-        const storedUserId = localStorage.getItem("userId");
-        const storedUserName = localStorage.getItem("userName");
-        setUserId(storedUserId);
-        setUserName(storedUserName);
-    }, []);
 
     // Fetch subcategories
     useEffect(() => {
@@ -42,14 +30,10 @@ const SectionPageContent = () => {
                 if (data?.subcategories && Array.isArray(data.subcategories)) {
                     setSubcategories(data.subcategories);
                 } else {
-                    console.error("Invalid data format: Expected an object with a 'subcategories' array", data);
                     setSubcategories([]);
                 }
             })
-            .catch((error) => {
-                console.error("Error fetching subcategories:", error);
-                setSubcategories([]);
-            })
+            .catch(() => setSubcategories([]))
             .finally(() => setLoading(false));
     }, []);
 
@@ -66,8 +50,8 @@ const SectionPageContent = () => {
                 if (response.data.sections?.length > 0) {
                     handleSectionClick(response.data.sections[0]); // Default open first section
                 }
-            } catch (error) {
-                console.error("Error fetching sections:", error);
+            } catch {
+                setSections([]);
             } finally {
                 setLoading(false);
             }
@@ -98,6 +82,26 @@ const SectionPageContent = () => {
         setCurrentPage(page);
     };
 
+    // Submit test
+    const handleSubmitTest = async () => {
+        setIsSubmitting(true);
+        try {
+            const response = await axios.post("/api/user/submittest", {
+                answers,
+                sectionId: selectedSection?._id,
+            });
+            if (response.status === 200) {
+                alert("Test submitted successfully!");
+                router.push("/user/dashboard"); // Redirect to dashboard or another page
+            }
+        } catch (error) {
+            console.error("Error submitting test:", error);
+            alert("Failed to submit the test. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-r from-gray-100 to-gray-200">
             {/* Sidebar */}
@@ -105,9 +109,7 @@ const SectionPageContent = () => {
                 <h2 className="text-2xl font-bold text-blue-600 mb-4">Subcategories</h2>
                 {loading ? (
                     <div className="flex flex-col items-center space-y-4">
-                        {/* Spinner */}
                         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                        {/* Skeleton loader */}
                         <ul className="space-y-2 w-full">
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <li
@@ -134,35 +136,6 @@ const SectionPageContent = () => {
                     <p className="text-gray-500">No subcategories available</p>
                 )}
             </div>
-
-            {/* <div className="lg:w-1/4 w-full p-6 bg-white shadow-md overflow-auto">
-                <h2 className="text-2xl font-bold text-blue-600 mb-4">Subcategories</h2>
-                {loading ? (
-                    <ul className="space-y-2">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <li
-                                key={index}
-                                className="p-3 bg-gray-300 animate-pulse rounded-lg"
-                            ></li>
-                        ))}
-                    </ul>
-                ) : subcategories.length > 0 ? (
-                    <ul className="space-y-2">
-                        {subcategories?.map((subcategory) => (
-                            <li
-                                key={subcategory._id}
-                                className={`p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer ${selectedSection?._id === subcategory._id ? "bg-blue-500 text-white" : ""
-                                    }`}
-                                onClick={() => handleSectionClick(subcategory)}
-                            >
-                                {subcategory.name}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500">No subcategories available</p>
-                )}
-            </div> */}
 
             {/* Main Content */}
             <main className="lg:w-3/4 w-full p-6 bg-gray-50 overflow-y-scroll">
@@ -215,40 +188,38 @@ const SectionPageContent = () => {
                             </div>
                         ))}
 
-                        {/* Pagination */}
-                        <div className="flex justify-between mt-6">
+                        {/* Pagination and Submit Button */}
+                        <div className="flex justify-between items-center mt-6">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
                                 disabled={currentPage === 0}
                                 className={`px-4 py-2 rounded-lg ${currentPage === 0
-                                    ? "bg-gray-300 cursor-not-allowed"
-                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                        ? "bg-gray-300 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
                                     }`}
                             >
                                 Previous
                             </button>
-                            {Array.from({ length: totalPages }, (_, index) => (
+                            {currentPage === totalPages - 1 ? (
                                 <button
-                                    key={index}
-                                    onClick={() => handlePageClick(index)}
-                                    className={`px-4 py-2 rounded-lg ${currentPage === index
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
+                                    onClick={handleSubmitTest}
+                                    disabled={isSubmitting}
+                                    className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                >
+                                    {isSubmitting ? "Submitting..." : "Submit"}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
+                                    disabled={currentPage === totalPages - 1}
+                                    className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
+                                            ? "bg-gray-300 cursor-not-allowed"
+                                            : "bg-blue-500 text-white hover:bg-blue-600"
                                         }`}
                                 >
-                                    {index + 1}
+                                    Next
                                 </button>
-                            ))}
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
-                                disabled={currentPage === totalPages - 1}
-                                className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
-                                    ? "bg-gray-300 cursor-not-allowed"
-                                    : "bg-blue-500 text-white hover:bg-blue-600"
-                                    }`}
-                            >
-                                Next
-                            </button>
+                            )}
                         </div>
                     </div>
                 ) : (

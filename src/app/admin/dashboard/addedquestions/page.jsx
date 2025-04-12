@@ -60,7 +60,7 @@ function AddedQuestions() {
     console.log(id, "Deleting question with ID");
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/admin/deletequestion/${id}`
+        `/api/admin/deletequestion/${id}`
       );
 
       if (response.status === 200) {
