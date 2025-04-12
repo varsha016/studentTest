@@ -48,7 +48,7 @@ const SubcategoryPageContent = () => {
 
             try {
                 setLoading(true);
-                setError(null);
+                // setError(null);
 
                 const response = await fetch(`/api/admin/getallsubcategory?id=${categoryId}`);
                 if (!response.ok) throw new Error('Failed to fetch subcategories');

@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }) {
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/superAdminDashboard/allData" className="hover:text-blue-400">
+                        <a href="/admin/superAdminDashboard/allInfo" className="hover:text-blue-400">
                             AllData
                         </a>
                     </li>

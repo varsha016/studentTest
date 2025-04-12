@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import axios from "axios";
@@ -91,80 +88,6 @@ const SectionPageContent = () => {
         }));
     };
 
-    // Handle test submission
-    const handleSubmitTest = async () => {
-        if (!selectedSection || isSubmitting) return;
-
-        setIsSubmitting(true);
-
-        try {
-            const responses = questions.map((q) => ({
-                questionId: q._id,
-                questionText: q.questionText,
-                answer: answers[q._id] !== undefined ? answers[q._id] : null,
-                correctOptionIndex: q.questionType !== "direct" ? q.correctOptionIndex : null,
-                directAnswer: q.questionType === "direct" ? q.directAnswer : null,
-            }));
-
-            const response = await axios.post("/api/user/submittest", {
-                userId,
-                sectionId: selectedSection._id,
-                responses,
-            });
-
-            if (response.status === 201) {
-                alert("Test submitted successfully!");
-                setCompletedSections((prev) => new Set([...prev, selectedSection._id]));
-                setResults(response.data);
-                setSelectedSection(null);
-            }
-        } catch (error) {
-            console.error("Error submitting test:", error);
-            alert("Failed to submit test. Try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // Download results as PDF
-    const downloadResults = () => {
-        if (!results) {
-            alert("No test data available to download.");
-            return;
-        }
-
-        const doc = new jsPDF();
-        let y = 10;
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(18);
-        doc.text("Test Results Report", 10, y);
-        y += 10;
-
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "normal");
-        doc.text(`User ID: ${userId}`, 10, y);
-        y += 8;
-
-        doc.text(`User Name: ${userName}`, 10, y);
-        y += 8;
-
-        results.responses.forEach((response, index) => {
-            if (y > 270) {
-                doc.addPage();
-                y = 10;
-            }
-
-            doc.text(`Q${index + 1}: ${response.questionText}`, 10, y);
-            y += 6;
-
-            doc.text(`Your Answer: ${response.answer || "Not Answered"}`, 10, y);
-            y += 6;
-        });
-
-        doc.save(`test_results_${userId}.pdf`);
-    };
-
     // Pagination logic
     const totalPages = Math.ceil(questions?.length / questionsPerPage);
     const startIndex = currentPage * questionsPerPage;
@@ -176,21 +99,30 @@ const SectionPageContent = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-300">
-            {/* <pre>{JSON.stringify(displayedQuestions, null, 2)}</pre> */}
-            {/* Left Sidebar: Subcategories */}
-            <div className="w-1/4 p-4 bg-gray-100">
-                <h2 className="text-lg font-bold mb-4">Subcategories</h2>
+        <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-r from-gray-100 to-gray-200">
+            {/* Sidebar */}
+            <div className="lg:w-1/4 w-full p-6 bg-white shadow-md overflow-auto">
+                <h2 className="text-2xl font-bold text-blue-600 mb-4">Subcategories</h2>
                 {loading ? (
-                    <p>Loading...</p>
+                    <div className="flex flex-col items-center space-y-4">
+                        {/* Spinner */}
+                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        {/* Skeleton loader */}
+                        <ul className="space-y-2 w-full">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                                <li
+                                    key={index}
+                                    className="p-3 bg-gray-300 animate-pulse rounded-lg"
+                                ></li>
+                            ))}
+                        </ul>
+                    </div>
                 ) : subcategories.length > 0 ? (
-                    <ul>
-                        {subcategories.map((subcategory) => (
+                    <ul className="space-y-2">
+                        {subcategories?.map((subcategory) => (
                             <li
                                 key={subcategory._id}
-                                className={`p-2 cursor-pointer rounded ${selectedSection?._id === subcategory._id
-                                    ? "bg-blue-500 text-white"
-                                    : "hover:bg-gray-200"
+                                className={`p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer ${selectedSection?._id === subcategory._id ? "bg-blue-500 text-white" : ""
                                     }`}
                                 onClick={() => handleSectionClick(subcategory)}
                             >
@@ -199,33 +131,61 @@ const SectionPageContent = () => {
                         ))}
                     </ul>
                 ) : (
-                    <p>No subcategories available</p>
+                    <p className="text-gray-500">No subcategories available</p>
                 )}
             </div>
 
-            {/* Main Content: Sections and Questions */}
-            <div className="w-3/4 p-4 bg-gray-200">
-                <h2 className="text-lg font-bold mb-4">
+            {/* <div className="lg:w-1/4 w-full p-6 bg-white shadow-md overflow-auto">
+                <h2 className="text-2xl font-bold text-blue-600 mb-4">Subcategories</h2>
+                {loading ? (
+                    <ul className="space-y-2">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <li
+                                key={index}
+                                className="p-3 bg-gray-300 animate-pulse rounded-lg"
+                            ></li>
+                        ))}
+                    </ul>
+                ) : subcategories.length > 0 ? (
+                    <ul className="space-y-2">
+                        {subcategories?.map((subcategory) => (
+                            <li
+                                key={subcategory._id}
+                                className={`p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer ${selectedSection?._id === subcategory._id ? "bg-blue-500 text-white" : ""
+                                    }`}
+                                onClick={() => handleSectionClick(subcategory)}
+                            >
+                                {subcategory.name}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-gray-500">No subcategories available</p>
+                )}
+            </div> */}
+
+            {/* Main Content */}
+            <main className="lg:w-3/4 w-full p-6 bg-gray-50 overflow-y-scroll">
+                <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
                     {selectedSection ? `Questions for ${selectedSection.name}` : "Select a Subcategory"}
                 </h2>
                 {loading ? (
-                    <p>Loading...</p>
+                    <p className="text-center text-gray-500">Loading...</p>
                 ) : selectedSection ? (
                     <div>
                         {displayedQuestions?.map((question, index) => (
-                            <div key={question._id} className="mb-4">
-                                <p className="text-lg font-semibold">
+                            <div key={question._id} className="mb-6 border-b pb-4">
+                                <p className="text-lg font-semibold text-gray-800">
                                     Q{startIndex + index + 1}:{" "}
                                     <span
                                         className="prose prose-sm max-w-none"
                                         dangerouslySetInnerHTML={{ __html: question?.questionText }}
                                     />
-                                    {/* Q{startIndex + index + 1}: {question.questionText} */}
                                 </p>
                                 {question.questionType === "direct" ? (
                                     <input
                                         type="text"
-                                        className="w-full p-2 border rounded"
+                                        className="w-full p-2 border rounded-lg"
                                         placeholder="Enter your answer"
                                         value={answers[question._id] || ""}
                                         onChange={(e) =>
@@ -233,10 +193,10 @@ const SectionPageContent = () => {
                                         }
                                     />
                                 ) : (
-                                    <ul>
+                                    <ul className="mt-2 space-y-2">
                                         {question.options.map((option, optIndex) => (
-                                            <li key={optIndex}>
-                                                <label>
+                                            <li key={optIndex} className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                                <label className="flex items-center space-x-2">
                                                     <input
                                                         type="radio"
                                                         name={`mcq-${question._id}`}
@@ -246,7 +206,7 @@ const SectionPageContent = () => {
                                                             setAnswers((prev) => ({ ...prev, [question._id]: option }))
                                                         }
                                                     />
-                                                    {option}
+                                                    <span>{option}</span>
                                                 </label>
                                             </li>
                                         ))}
@@ -256,11 +216,14 @@ const SectionPageContent = () => {
                         ))}
 
                         {/* Pagination */}
-                        <div className="flex justify-between mt-4">
+                        <div className="flex justify-between mt-6">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
                                 disabled={currentPage === 0}
-                                className="px-4 py-2 bg-gray-300 rounded"
+                                className={`px-4 py-2 rounded-lg ${currentPage === 0
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                    }`}
                             >
                                 Previous
                             </button>
@@ -268,7 +231,9 @@ const SectionPageContent = () => {
                                 <button
                                     key={index}
                                     onClick={() => handlePageClick(index)}
-                                    className={`px-4 py-2 rounded ${currentPage === index ? "bg-blue-500 text-white" : "bg-gray-300"
+                                    className={`px-4 py-2 rounded-lg ${currentPage === index
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
                                         }`}
                                 >
                                     {index + 1}
@@ -277,32 +242,21 @@ const SectionPageContent = () => {
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
                                 disabled={currentPage === totalPages - 1}
-                                className="px-4 py-2 bg-gray-300 rounded"
+                                className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                    }`}
                             >
                                 Next
                             </button>
                         </div>
-
-                        <button
-                            onClick={handleSubmitTest}
-                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-                        >
-                            Submit Test
-                        </button>
                     </div>
                 ) : (
-                    <p>No sections available</p>
+                    <p className="text-center text-lg text-gray-500 mt-4">
+                        Select a subcategory to view questions.
+                    </p>
                 )}
-
-                {results && (
-                    <button
-                        onClick={downloadResults}
-                        className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-                    >
-                        Download Results
-                    </button>
-                )}
-            </div>
+            </main>
         </div>
     );
 };
