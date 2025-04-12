@@ -311,7 +311,10 @@ const TitleCategoryList = () => {
                                                                                     </span>
                                                                                     <div className="flex space-x-1 ml-2">
                                                                                         <button
-                                                                                            onClick={() => handleEditClick('Question', q._id, q.questionText)}
+                                                                                            onClick={() => handleEditClick('Question', q._id, <span
+                                                                                                className="prose prose-sm max-w-none"
+                                                                                                dangerouslySetInnerHTML={{ __html: question?.questionText }}
+                                                                                            />)}
                                                                                             className="text-blue-400 hover:text-blue-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
                                                                                             title="Edit"
                                                                                         >
