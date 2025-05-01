@@ -98,6 +98,7 @@ function AddedQuestions() {
         setMessage("Authentication token or Operator ID is missing.");
         return;
       }
+      console.log(operatorId, "operatorId");
 
       const response = await axios.get(
         `/api/admin/getOperatorQuestions/${operatorId}`,
@@ -106,8 +107,10 @@ function AddedQuestions() {
         }
       );
 
+      console.log(response, "response");
+
       if (response.status === 200) {
-        setQuestions(response.data.questions);
+        setQuestions(response.data.questions || []);
         localStorage.setItem(
           "submittedQuestions",
           JSON.stringify(response.data.questions.map((q) => q._id))
@@ -122,10 +125,14 @@ function AddedQuestions() {
       setQuestionsLoading(false);
     }
   };
-
   useEffect(() => {
+
+
     fetchUpdatedQuestions();
-  }, []);
+  }, []); // Run this effect once when the component mounts
+
+
+
 
   // Pagination calculations
   const totalItems = questions?.length || 0;
@@ -147,6 +154,7 @@ function AddedQuestions() {
       </div>
     );
   }
+  console.log(questions, "questions");
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -339,6 +347,87 @@ function AddedQuestions() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">SubCategory:</label>
+                <div className="p-2 bg-gray-100 rounded">{getSubCategoryName(selectedQuestion.subCategory)}</div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Question:</label>
+                <div
+                  className="prose prose-sm max-w-none p-2 bg-gray-100 rounded"
+                  dangerouslySetInnerHTML={{ __html: selectedQuestion.questionText }}
+                />
+              </div>
+
+              {/* Conditional display for Direct Answer */}
+              {selectedQuestion.questionType === "direct" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Direct Answer:</label>
+                  <div
+                    className="prose prose-sm max-w-none p-2 bg-gray-100 rounded"
+                    dangerouslySetInnerHTML={{ __html: selectedQuestion.directAnswer }}
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Options:</label>
+                {selectedQuestion.options?.map((opt, i) => (
+                  <div key={i} className="p-2 bg-gray-100 rounded mb-2">
+                    {i === selectedQuestion.correctOptionIndex ? (
+                      <span className="font-bold text-green-600">✓
+                        <div
+                          className="prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ __html: opt }}
+                        />
+                      </span>
+                    ) : (
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: opt }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Explanation:</label>
+                <div className="p-2 bg-gray-100 rounded">
+                  <div
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: selectedQuestion.answerExplanation }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+
+      {/* {showModal && selectedQuestion && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg p-6 w-[90%] md:w-[600px] shadow-2xl relative"
+          >
+            <h2 className="text-xl font-bold mb-4">Question Details</h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">SubCategory:</label>
                 <div className="p-2 bg-gray-100 rounded"> {getSubCategoryName(selectedQuestion.subCategory)}</div>
               </div>
 
@@ -355,9 +444,15 @@ function AddedQuestions() {
                 {selectedQuestion.options?.map((opt, i) => (
                   <div key={i} className="p-2 bg-gray-100 rounded mb-2">
                     {i === selectedQuestion.correctOptionIndex ? (
-                      <span className="font-bold text-green-600">✓ {opt}</span>
+                      <span className="font-bold text-green-600">✓ <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: opt }}
+                      /></span>
                     ) : (
-                      opt
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: opt }}
+                      />
                     )}
                   </div>
                 ))}
@@ -365,7 +460,13 @@ function AddedQuestions() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Explanation:</label>
-                <div className="p-2 bg-gray-100 rounded">{selectedQuestion.answerExplanation}</div>
+                <div className="p-2 bg-gray-100 rounded">
+
+                  <div
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: selectedQuestion.answerExplanation }}
+                  />
+                </div>
               </div>
             </div>
 
@@ -379,7 +480,7 @@ function AddedQuestions() {
             </div>
           </motion.div>
         </div>
-      )}
+      )} */}
       {showUpdateForm && questionToUpdate && (
         <UpdateQuestionForm
           question={questionToUpdate}

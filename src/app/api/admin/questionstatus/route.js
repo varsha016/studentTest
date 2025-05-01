@@ -22,6 +22,7 @@ export async function GET(req) {
         console.log("✅ Authenticated Operator:", operator);
         console.log("✅ Operator Role:", role);
 
+
         if (role !== "admin") {  // 🔥 Now `role` is properly checked
             console.error("❌ Unauthorized: User is not an admin");
             return NextResponse.json({ message: "Unauthorized: Only admins can view pending questions" }, { status: 403 });
@@ -46,7 +47,9 @@ export async function GET(req) {
         if (!questions.length) {
             return NextResponse.json({ message: "No questions found" }, { status: 404 });
         }
-
+        if (!questions.length) {
+            return NextResponse.json({ questions: [] }, { status: 200 });
+        }
         return NextResponse.json({ questions }, { status: 200 });
 
     } catch (error) {

@@ -73,6 +73,11 @@ export default function DashboardLayout({ children }) {
                             View Questions
                         </a>
                     </li>
+                    {/* <li>
+                        <a href="/admin/superAdminDashboard/QuestionsByOperator" className="hover:text-blue-400">
+                            Operator Questions
+                        </a>
+                    </li> */}
                     <li>
                         <a href="/admin/superAdminDashboard/addOperator" className="hover:text-blue-400">
                             Add Operator
@@ -80,7 +85,12 @@ export default function DashboardLayout({ children }) {
                     </li>
                     <li>
                         <a href="/admin/superAdminDashboard/alloperator" className="hover:text-blue-400">
-                            Operators Data
+                            Operators Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/superAdminDashboard/usermanagement" className="hover:text-blue-400">
+                            User Management
                         </a>
                     </li>
                     <li>

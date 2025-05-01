@@ -246,20 +246,25 @@ const SectionPageContent = () => {
                             ></li>
                         ))}
                     </ul>
-                ) : subcategories.length > 0 ? (
-                    <ul className="space-y-2">
-                        {subcategories?.map((category) => (
-                            <li
-                                key={category._id}
-                                className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
-                            >
-                                {category.name}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500">No categories available</p>
-                )}
+                ) :
+                    subcategories.length > 0 ? (
+                        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+                            <ul className="space-y-2">
+                                {subcategories?.map((category) => (
+                                    <li
+                                        key={category._id}
+                                        className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
+                                    // className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
+                                    >
+                                        {category.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )
+                        : (
+                            <p className="text-gray-500">No categories available</p>
+                        )}
             </div>
 
             {/* Main Content */}
@@ -274,8 +279,8 @@ const SectionPageContent = () => {
                             <button
                                 key={section._id}
                                 className={`px-4 py-2 font-bold rounded-lg transition-colors ${selectedSection?._id === section._id
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-300 hover:bg-blue-400 hover:text-white"
                                     }`}
                                 onClick={() => handleSectionClick(section)}
                             >
@@ -326,10 +331,10 @@ const SectionPageContent = () => {
                                                             <li
                                                                 key={optIndex}
                                                                 className={`p-2 rounded-lg flex justify-between items-center ${isSelected
-                                                                        ? isCorrect
-                                                                            ? "bg-green-100"
-                                                                            : "bg-red-100"
-                                                                        : "bg-gray-200"
+                                                                    ? isCorrect
+                                                                        ? "bg-green-100"
+                                                                        : "bg-red-100"
+                                                                    : "bg-gray-200"
                                                                     }`}
                                                             >
                                                                 <label className="flex items-center space-x-2">
@@ -349,7 +354,11 @@ const SectionPageContent = () => {
                                                                         className={`${isSelected && isCorrect ? "font-bold" : ""
                                                                             }`}
                                                                     >
-                                                                        {option}
+                                                                        <div
+                                                                            className="prose prose-sm max-w-none"
+                                                                            dangerouslySetInnerHTML={{ __html: option }}
+                                                                        />
+                                                                        {/* {option} */}
                                                                     </span>
                                                                 </label>
                                                             </li>
@@ -388,8 +397,8 @@ const SectionPageContent = () => {
                                             onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
                                             disabled={currentPage === 0}
                                             className={`px-4 py-2 rounded-lg ${currentPage === 0
-                                                    ? "bg-gray-300 cursor-not-allowed"
-                                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                                ? "bg-gray-300 cursor-not-allowed"
+                                                : "bg-blue-500 text-white hover:bg-blue-600"
                                                 }`}
                                         >
                                             Previous
@@ -399,8 +408,8 @@ const SectionPageContent = () => {
                                                 key={index}
                                                 onClick={() => handlePageClick(index)}
                                                 className={`px-4 py-2 rounded-lg ${currentPage === index
-                                                        ? "bg-blue-500 text-white"
-                                                        : "bg-gray-300 hover:bg-blue-400 hover:text-white"
+                                                    ? "bg-blue-500 text-white"
+                                                    : "bg-gray-300 hover:bg-blue-400 hover:text-white"
                                                     }`}
                                             >
                                                 {index + 1}
@@ -410,8 +419,8 @@ const SectionPageContent = () => {
                                             onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
                                             disabled={currentPage === totalPages - 1}
                                             className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
-                                                    ? "bg-gray-300 cursor-not-allowed"
-                                                    : "bg-blue-500 text-white hover:bg-blue-600"
+                                                ? "bg-gray-300 cursor-not-allowed"
+                                                : "bg-blue-500 text-white hover:bg-blue-600"
                                                 }`}
                                         >
                                             Next

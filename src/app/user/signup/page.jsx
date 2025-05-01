@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function LoginPage() {
+export default function SignupPage() {
     const [formData, setFormData] = useState({
+        name: "",
+        lastName: "",
         username: "",
         password: "",
+        contactNumber: "",
     });
     const [error, setError] = useState("");
     const router = useRouter();
@@ -22,7 +25,7 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const response = await fetch("/api/user/login", {
+            const response = await fetch("/api/user/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -31,23 +34,14 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.message || "Invalid credentials");
-                toast.error(data.message || "Login failed!");
+                setError(data.message || "Something went wrong");
+                toast.error(data.message || "Signup failed!");
                 return;
             }
 
-            // Save token to localStorage
-            localStorage.setItem("userId", data.user._id);
-            localStorage.setItem("name", data.user.name);
-            localStorage.setItem("username", data.user.username);
-            localStorage.setItem("userToken", data.userToken);
-            // localStorage.setItem("userId", response.data.userId);
-            window.dispatchEvent(new Event("user-auth-changed")); // ✅ must be after localStorage set
-
-
-            toast.success("Login successful! Redirecting...");
+            toast.success("Signup successful! Redirecting to login...");
             setTimeout(() => {
-                router.push("/");
+                router.push("/user/login");
             }, 2000);
         } catch (err) {
             setError("An error occurred. Please try again.");
@@ -58,15 +52,48 @@ export default function LoginPage() {
     return (
         <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded">
             <ToastContainer />
-            <h1 className="text-2xl font-bold mb-4">Login</h1>
+            <h1 className="text-2xl font-bold mb-4">Signup</h1>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Last Name</label>
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded"
+                        required
+                    />
+                </div>
                 <div className="mb-4">
                     <label className="block text-gray-700">Username</label>
                     <input
                         type="text"
                         name="username"
                         value={formData.username}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Contact Number</label>
+                    <input
+                        type="text"
+                        name="contactNumber"
+                        value={formData.contactNumber}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border rounded"
                         required
@@ -87,7 +114,7 @@ export default function LoginPage() {
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                 >
-                    Login
+                    Signup
                 </button>
             </form>
         </div>

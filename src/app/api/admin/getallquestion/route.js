@@ -5,7 +5,7 @@ import { authenticate } from "../../../lib/auth/auth";
 
 export async function GET(req) {
     await connectDB();
-    const operator = await authenticate(req);
+    // const operator = await authenticate(req);
 
     // Optional auth check
     // if (!operator) {
@@ -17,6 +17,7 @@ export async function GET(req) {
 
     let filter = {};
 
+
     // If status is provided, validate and add to filter
     if (status) {
         if (!["draft", "pending", "approved", "rejected"].includes(status)) {
@@ -26,7 +27,7 @@ export async function GET(req) {
     }
 
     try {
-        const questions = await Question.find(filter);
+        const questions = await Question.find(filter).populate("createdBy", "name");
         return NextResponse.json(questions, { status: 200 });
     } catch (error) {
         console.error("Error fetching questions:", error);

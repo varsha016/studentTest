@@ -21,6 +21,8 @@ const OperatorsPage = () => {
         setLoading(true);
         try {
             const response = await axios.get('/api/admin/getoperator');
+            console.log(response.data);
+
             setOperators(response.data);
         } catch (err) {
             setError(err.response?.data?.message || err.message);
@@ -166,6 +168,8 @@ const OperatorsPage = () => {
                 updateQuestion: operator.permissionId?.updateQuestion || false,
                 addCategory: operator.permissionId?.addCategory || false,
                 updateCategory: operator.permissionId?.updateCategory || false,
+                addSubCategory: operator.permissionId?.addSubCategory || false,
+                updateSubCategory: operator.permissionId?.updateSubCategory || false,
             }
         });
         setIsModalOpen(true);
@@ -204,12 +208,15 @@ const OperatorsPage = () => {
                         <tr className="bg-gray-200">
                             <th className="py-2 px-4 border">Name</th>
                             <th className="py-2 px-4 border">Email</th>
+                            <th className="py-2 px-4 border">Password</th>
                             <th className="py-2 px-4 border">Add TitleCategory</th>
                             <th className="py-2 px-4 border">Update TitleCategory</th>
                             <th className="py-2 px-4 border">Add Category</th>
                             <th className="py-2 px-4 border">Update Category</th>
                             <th className="py-2 px-4 border">Add Question</th>
                             <th className="py-2 px-4 border">Update Question</th>
+                            <th className="py-2 px-4 border">Add SubCategory</th>
+                            <th className="py-2 px-4 border">Update SubCategory</th>
                             <th className="py-2 px-4 border">Actions</th>
                         </tr>
                     </thead>
@@ -232,12 +239,15 @@ const OperatorsPage = () => {
                                 <tr key={operator._id} className="border-b">
                                     <td className="py-2 px-4 ">{operator.name}</td>
                                     <td className="py-2 px-4 ">{operator.email}</td>
+                                    <td className="py-2 px-4 ">{operator.password}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.addTitleCategory ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.updateTitleCategory ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.addCategory ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.updateCategory ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.addQuestion ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4 ">{operator.permissionId?.updateQuestion ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 ">{operator.permissionId?.addSubCategory ? '🟢' : '🔴'}</td>
+                                    <td className="py-2 px-4 ">{operator.permissionId?.updateSubCategory ? '🟢' : '🔴'}</td>
                                     <td className="py-2 px-4  whitespace-nowrap">
                                         <button
                                             onClick={() => handleUpdate(operator)}

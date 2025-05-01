@@ -70,6 +70,8 @@ export default function AddCategory() {
         }
 
         const operatorToken = localStorage.getItem('operatorToken');
+        console.log(operatorToken, 'Computer Engineering');
+
         if (!operatorToken) {
             setMessage("You are not authorized. Please login.");
             return;

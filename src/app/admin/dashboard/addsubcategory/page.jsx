@@ -59,6 +59,36 @@ const AddSubcategory = () => {
       setLoading(false);
     }
   };
+  const [permissions, setPermissions] = useState({});
+  const [permissionsLoading, setPermissionsLoading] = useState(true);
+  useEffect(() => {
+    fetchLoggedInUser();
+  }, []);
+  const fetchLoggedInUser = () => {
+    const operator = JSON.parse(localStorage.getItem("operatorInfo"));
+    if (operator?.email) {
+      // setUserEmail(operator.email);
+      fetchOperators(operator.email);
+    }
+  };
+  const fetchOperators = async (email) => {
+    try {
+      const response = await axios.get('/api/admin/getoperator');
+
+      if (response.data.length > 0) {
+        const loggedInOperator = response.data.find(op => op.email === email);
+        console.log("loggedInOperator", loggedInOperator);
+
+        if (loggedInOperator) {
+          setPermissions(loggedInOperator?.permissionId || {});
+        }
+      }
+    } catch (err) {
+      setMessage(`❌ ${err.response?.data?.message || err.message}`);
+    } finally {
+      setPermissionsLoading(false); // ✅ stop loading after fetch
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -95,18 +125,43 @@ const AddSubcategory = () => {
           placeholder="Enter subcategory name"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-blue-400 flex justify-center items-center gap-2"
-        >
-          {loading ? (
-            <>
-              <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-              Saving...
-            </>
-          ) : "Add Subcategory"}
-        </button>
+
+        {permissionsLoading ? (
+          <div className="w-full text-gray-500 px-4 py-2 rounded-md bg-gray-100">
+            Checking permissions...
+          </div>
+        ) : permissions.addQuestion ? (
+          // <button
+          //   type="submit"
+          //   disabled={loading}
+          //   className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors flex items-center gap-2"
+          // >
+          //   {loading ? (
+          //     <>
+          //       <ArrowPathIcon className="w-4 h-4 animate-spin" />
+          //       Saving...
+          //     </>
+          //   ) : (
+          //     "Save Question"
+          //   )}
+          // </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-blue-400 flex justify-center items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Saving...
+              </>
+            ) : "Add Subcategory"}
+          </button>
+        ) : (
+          <div className="w-full text-red-500 px-4 py-2 rounded-md bg-red-100 transition">
+            You are not authorized to add Category
+          </div>
+        )}
       </form>
     </div>
   );

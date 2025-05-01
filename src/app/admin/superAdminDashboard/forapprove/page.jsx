@@ -121,11 +121,12 @@ export default function AdminDashboard() {
                             <th className="p-2 border">Subcategory</th>
                             <th className="p-2 border">Question</th>
                             <th className="p-2 border">Options</th>
+                            <th className="p-2 border">DirectAnswer</th>
                             <th className="p-2 border">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {questions.map((q) => (
+                        {/* {questions.map((q) => (
                             <tr key={q._id} className="hover:bg-gray-700">
                                 <td className="p-2 border">
                                     <input
@@ -164,7 +165,70 @@ export default function AdminDashboard() {
                                     </button>
                                 </td>
                             </tr>
+                        ))} */}
+                        {questions.map((q) => (
+                            <tr key={q._id} className="hover:bg-gray-700">
+                                <td className="p-2 border">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedQuestions.includes(q._id)}
+                                        onChange={() => handleCheckboxChange(q._id)}
+                                    />
+                                </td>
+
+                                {/* Sub Category */}
+                                <td className="p-2 border">{q.subCategory}</td>
+
+                                {/* Question */}
+                                <td className="p-2 border">
+                                    <div
+                                        className="prose prose-sm max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: q.questionText }}
+                                    />
+                                </td>
+
+                                {/* Options */}
+                                <td className="p-2 border">
+                                    <ul className="list-disc pl-4">
+                                        {q.options?.map((op, idx) => (
+                                            <li key={idx}>
+                                                {/* {op} */}
+                                                <div
+                                                    className="prose prose-sm max-w-none"
+                                                    dangerouslySetInnerHTML={{ __html: op }}
+                                                />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </td>
+
+                                {/* Answer (NEW added) */}
+                                <td className="p-2 border font-semibold text-green-400">
+                                    {/* {q.directAnswer} */}
+                                    <div
+                                        className="prose prose-sm max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: q.directAnswer }}
+                                    />
+                                </td>
+
+                                {/* Approve / Reject buttons */}
+                                <td className="p-2 border space-x-2">
+                                    <button
+                                        onClick={() => handleApproveSelected(q._id)}
+                                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        onClick={() => handleReject(q._id)}
+                                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                                    >
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
                         ))}
+
                     </tbody>
                 </table>
             </div>

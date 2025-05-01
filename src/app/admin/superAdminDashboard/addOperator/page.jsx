@@ -16,21 +16,30 @@ export default function AddOperatorPage() {
         email: '',
         password: '',
         permissions: {
-            addQuestion: false,
-            updateQuestion: false,
-            addCategory: false,
-            updateCategory: false,
-            addTitleCategory: false,
-            updateTitleCategory: false,
-            addEditCategory: false,
-            addEditSections: false,
-            addOperators: false,
-            editOperators: false,
+
+            addQuestion: null,
+            updateQuestion: null,
+            addCategory: null,
+            updateCategory: null,
+            addTitleCategory: null,
+            updateTitleCategory: null,
+            addSubCategory: null,
+            updateSubCategory: null,
+            // addQuestion: false,
+            // updateQuestion: false,
+            // addCategory: false,
+            // updateCategory: false,
+            // addTitleCategory: false,
+            // updateTitleCategory: false,
+            // addEditCategory: false,
+            // addEditSections: false,
+            // addOperators: false,
+            // editOperators: false,
             // addEditQuestions: false,
             // deleteCategory: false,
             // deleteQuestions: false,
-            approveRejectQuestion: false,
-            viewAnalytics: false,
+            // approveRejectQuestion: false,
+            // viewAnalytics: false,
         },
     });
 
@@ -75,15 +84,20 @@ export default function AddOperatorPage() {
                     updateCategory: null,
                     addTitleCategory: null,
                     updateTitleCategory: null,
-                    addEditCategory: null,
-                    addEditSections: null,
-                    addOperators: null,
-                    editOperators: null,
+                    updateSubCategory: null,
+                    addSubCategory: null,
+                    // addSection: null,
+                    // updateSection: null,
+
+                    // addEditCategory: null,
+                    // addEditSections: null,
+                    // addOperators: null,
+                    // editOperators: null,
                     // addEditQuestions: null,
                     // deleteCategory: null,
                     // deleteQuestions: null,
-                    approveRejectQuestion: null,
-                    viewAnalytics: null,
+                    // approveRejectQuestion: null,
+                    // viewAnalytics: null,
                 },
             })
             router.push("/admin/superAdminDashboard/alloperator");
@@ -152,7 +166,7 @@ export default function AddOperatorPage() {
                             type="submit"
                             className="w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
                         >
-                            Create User
+                            Create Operator
                         </button>
                     </form>
                 </div>

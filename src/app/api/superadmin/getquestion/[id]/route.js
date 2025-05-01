@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/db";
 import Question from "../../../../models/admin/QuestionModel";
-// import { authenticate } from "../../../../lib/auth";
-import { authenticate } from "@/app/lib/auth/auth";
+import { authenticate } from "../../../../lib/auth/auth";
+
 // GET /api/superadmin/get-question/:id
 export async function GET(req, { params }) {
     await connectDB();
@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = params;
 
     try {
         const question = await Question.findById(id);

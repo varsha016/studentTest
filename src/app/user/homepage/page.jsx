@@ -43,7 +43,7 @@ const MainHomePage = () => {
       await Promise.all(
         titleCategories.map(async (titleCategory) => {
           try {
-            const response = await axios.get(
+            const response = await axios?.get(
               `/api/admin/getallcategory?titleCategory=${titleCategory._id}`
             );
             // Handle both array and object response formats
@@ -156,10 +156,10 @@ const MainHomePage = () => {
 
                 {(!categoriesByTitle[titleCategory._id] ||
                   categoriesByTitle[titleCategory._id].length === 0) && (
-                  <div className="p-6 text-center text-gray-500">
-                    No categories available for this section
-                  </div>
-                )}
+                    <div className="p-6 text-center text-gray-500">
+                      No categories available for this section
+                    </div>
+                  )}
               </div>
             ))}
           </div>

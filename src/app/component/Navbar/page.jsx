@@ -1,282 +1,3 @@
-// // "use client";
-
-// // import Link from "next/link";
-// // import { useState, useRef, useEffect } from "react";
-// // import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
-// // import ProfileDropdown from "../../user/profiledropdown/page";
-// // import SearchBar from "../searchbar/page";
-
-// // const menuItems = [
-// //     { label: "Home", dropdown: [], link: "/" },
-// //     { label: "Engineering MCQ", dropdown: ["Computer Engineering", "Civil Engineering"] },
-// //     { label: "Programming MCQ", dropdown: ["HTML", "CSS", "Javascript", "PHP"] },
-// //     { label: "More", dropdown: ["Commerce", "Science", "History"] },
-// //     { label: "exam", dropdown: [], link: "/user/exam" },
-// // ];
-
-// // export default function Navbar() {
-// //     const [isOpen, setIsOpen] = useState(false);
-// //     const [openDropdown, setOpenDropdown] = useState(null);
-// //     const dropdownRef = useRef(null);
-// //     const [userId, setUserId] = useState(null);
-
-// //     useEffect(() => {
-// //         const storedUserId = localStorage.getItem("userId");
-// //         setUserId(storedUserId);
-
-// //         const handleClickOutside = (event) => {
-// //             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-// //                 setOpenDropdown(null);
-// //             }
-// //         };
-
-// //         document.addEventListener("mousedown", handleClickOutside);
-// //         return () => document.removeEventListener("mousedown", handleClickOutside);
-// //     }, []);
-
-// //     const toggleMenu = () => {
-// //         setIsOpen((prev) => !prev);
-// //     };
-
-// //     const toggleDropdown = (index) => {
-// //         setOpenDropdown(openDropdown === index ? null : index);
-// //     };
-// //     // console.log(userId, "userId");
-
-// //     return (
-// //         <>
-// //             <div className="flex justify-between items-center py-4 px-6">
-// //                 <h6 className="text-2xl font-bold tracking-wide text-blue-300 hover:text-blue-600">
-// //                     Exam Portal
-// //                 </h6>
-// //                 <div className="flex items-center gap-4 text-gray-500 font-bold">
-// //                     <Link href="#" className="hover:text-yellow-400">CONTACT US</Link>
-// //                     <Link href="#" className="hover:text-yellow-400">ASK QUESTION</Link>
-// //                     {!userId ? (
-// //                         <Link href="/user/login" className="hover:text-yellow-400">LOGIN</Link>
-// //                     ) : null}
-// //                 </div>
-// //             </div>
-
-// //             <header className="bg-blue-900 text-white shadow-md rounded-0">
-// //                 <div className="container mx-auto flex justify-between items-center py-4 px-6">
-// //                     <button className="lg:hidden text-2xl" onClick={toggleMenu}>
-// //                         {isOpen ? <FaTimes /> : <FaBars />}
-// //                     </button>
-
-// //                     <nav className={`lg:flex ${isOpen ? "block" : "hidden"} w-full lg:w-auto`}>
-// //                         <ul className="flex flex-col lg:flex-row lg:space-x-6 space-y-4 lg:space-y-0" ref={dropdownRef}>
-// //                             {menuItems.map((item, index) => (
-// //                                 // <li key={index} className="relative">
-// //                                 //     <button onClick={() => toggleDropdown(index)} className="hover:text-yellow-400 flex items-center gap-2">
-// //                                 //         {item.label}
-// //                                 //         {item.dropdown.length > 0 && (openDropdown === index ? <FaChevronUp /> : <FaChevronDown />)}
-// //                                 //     </button>
-// //                                 //     {openDropdown === index && item.dropdown.length > 0 && (
-// //                                 //         <ul className="absolute left-0 bg-white text-black shadow-lg rounded-md w-56">
-// //                                 //             {item.dropdown.map((subItem, subIndex) => (
-// //                                 //                 <li key={subIndex} className="hover:bg-blue-100 p-2">
-// //                                 //                     <Link href={`#${subItem.toLowerCase()}`}>{subItem}</Link>
-// //                                 //                 </li>
-// //                                 //             ))}
-// //                                 //         </ul>
-// //                                 //     )}
-// //                                 // </li>
-// //                                 <li key={index} className="relative">
-// //                                     {item.link ? (
-// //                                         <Link href={item.link} className="hover:text-yellow-400 flex items-center gap-2">
-// //                                             {item.label}
-// //                                         </Link>
-// //                                     ) : (
-// //                                         <button onClick={() => toggleDropdown(index)} className="hover:text-yellow-400 flex items-center gap-2">
-// //                                             {item.label}
-// //                                             {item.dropdown.length > 0 && (openDropdown === index ? <FaChevronUp /> : <FaChevronDown />)}
-// //                                         </button>
-// //                                     )}
-
-// //                                     {openDropdown === index && item.dropdown.length > 0 && (
-// //                                         <ul className="absolute left-0 bg-white text-black shadow-lg rounded-md w-56">
-// //                                             {item.dropdown.map((subItem, subIndex) => (
-// //                                                 <li key={subIndex} className="hover:bg-blue-100 p-2">
-// //                                                     <Link href={`#${subItem.toLowerCase()}`}>{subItem}</Link>
-// //                                                 </li>
-// //                                             ))}
-// //                                         </ul>
-// //                                     )}
-// //                                 </li>
-
-// //                             ))}
-// //                         </ul>
-// //                     </nav>
-// //                     <SearchBar />
-// //                     {/* Show ProfileDropdown only if user is logged in */}
-// //                     <ProfileDropdown />
-// //                 </div>
-// //             </header>
-// //         </>
-// //     );
-// // }
-
-
-// // "use client";
-
-// // import Link from "next/link";
-// // import { useState, useEffect } from "react";
-// // import { FaBars, FaTimes } from "react-icons/fa";
-// // import ProfileDropdown from "../../user/profiledropdown/page";
-// // import SearchBar from "../searchbar/page";
-// // import axios from "axios";
-// // import { useRouter } from "next/navigation";
-
-// // export default function Navbar() {
-// //     const [isOpen, setIsOpen] = useState(false);
-// //     const [userId, setUserId] = useState(null);
-// //     const [loading, setLoading] = useState(true); // Add loading state
-// //     const [titleCategories, setTitleCategories] = useState([]);
-// //     const [categoriesByTitle, setCategoriesByTitle] = useState({});
-// //     const [isExpanded, setIsExpanded] = useState(false);
-// //     const router = useRouter();
-
-// //     useEffect(() => {
-// //         const storedUserId = localStorage.getItem("userId");
-// //         setUserId(storedUserId);
-
-// //         fetchAllTitleCategories();
-// //     }, []);
-
-// //     const fetchAllTitleCategories = async () => {
-// //         try {
-// //             const response = await axios.get("/api/admin/getalltitlecategory");
-// //             setTitleCategories(response.data);
-// //             fetchAllCategories(response.data);
-// //             setLoading(false);
-// //         } catch (error) {
-// //             console.error("Error fetching title categories:", error);
-// //         }
-// //     };
-
-// //     const fetchAllCategories = async (titleCategories) => {
-// //         try {
-// //             const categoryData = {};
-// //             await Promise.all(
-// //                 titleCategories.map(async (titleCategory) => {
-// //                     const response = await axios.get(
-// //                         `/api/admin/getallcategory?titleCategory=${encodeURIComponent(titleCategory._id)}`
-// //                     );
-// //                     categoryData[titleCategory._id] = response.data?.categories || [];
-// //                 })
-// //             );
-// //             setCategoriesByTitle(categoryData);
-// //         } catch (error) {
-// //             console.error("Error fetching categories:", error);
-// //         }
-// //     };
-
-// //     const toggleMenu = () => {
-// //         setIsOpen((prev) => !prev);
-// //     };
-
-
-// //     const handleCategoryClick = (categoryId, categoryName) => {
-// //         router.push(`/user/solvetestsubcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
-// //     };
-
-// //     return (
-// //         <>
-// //             <div className="flex justify-between items-center py-2 px-2">
-// //                 <h6 className="text-2xl font-bold tracking-wide text-blue-300 hover:text-blue-600">
-// //                     Exam Portal
-// //                 </h6>
-// //                 <div className="flex items-center gap-4 text-gray-500 font-bold">
-// //                     <Link href="#" className="hover:text-yellow-400">CONTACT US</Link>
-// //                     <Link href="#" className="hover:text-yellow-400">ASK QUESTION</Link>
-// //                     {!userId ? (
-// //                         <Link href="/user/login" className="hover:text-yellow-400">LOGIN</Link>
-// //                     ) : null}
-// //                 </div>
-// //             </div>
-
-// //             <header className="bg-blue-900 text-white shadow-md rounded-0 ">
-// //                 <div className="container mx-auto flex justify-between items-center py-4 px-6">
-// //                     <button className="lg:hidden text-2xl" onClick={toggleMenu}>
-// //                         {isOpen ? <FaTimes /> : <FaBars />}
-// //                     </button>
-// //                     <nav className={`lg:flex ${isOpen ? "block" : "hidden"} w-full lg:w-auto`}>
-// //                         <ul className="flex flex-col lg:flex-row lg:space-x-6 space-y-4 lg:space-y-0">
-// //                             {loading
-// //                                 ? Array.from({ length: 4 }).map((_, index) => (
-// //                                     <li key={index} className="relative group">
-// //                                         <div className="w-24 h-6 bg-gray-300 rounded-md animate-pulse"></div>
-// //                                         <ul className="absolute left-0 w-56">
-// //                                             {Array.from({ length: 0 }).map((_, subIndex) => (
-// //                                                 <li
-// //                                                     key={subIndex}
-// //                                                     className="h-5 w-44 bg-gray-300 mt-2 rounded-md animate-pulse"
-// //                                                 ></li>
-// //                                             ))}
-// //                                         </ul>
-// //                                     </li>
-// //                                 ))
-// //                                 : titleCategories.map((titleCategory) => (
-// //                                     <li key={titleCategory._id} className="relative group">
-// //                                         <button className="hover:text-yellow-400">
-// //                                             {titleCategory.title}
-// //                                         </button>
-// //                                         {categoriesByTitle[titleCategory._id]?.length > 0 && (
-// //                                             <ul className="absolute left-0 bg-white text-black shadow-lg rounded-md w-56 opacity-0 group-hover:opacity-100 group-hover:visible invisible transition-opacity duration-300">
-// //                                                 {categoriesByTitle[titleCategory._id].map((category) => (
-// //                                                     <li
-// //                                                         key={category._id}
-// //                                                         className="hover:bg-blue-100 p-2 cursor-pointer"
-// //                                                         onClick={() =>
-// //                                                             handleCategoryClick(category._id, category.name)
-// //                                                         }
-// //                                                     >
-// //                                                         {category.name}
-// //                                                     </li>
-// //                                                 ))}
-// //                                             </ul>
-// //                                         )}
-// //                                     </li>
-// //                                 ))}
-// //                         </ul>
-// //                     </nav>
-
-// //                     {/* <nav className={`lg:flex ${isOpen ? "block" : "hidden"} w-full lg:w-auto`}>
-// //                         <ul className="flex flex-col lg:flex-row lg:space-x-6 space-y-4 lg:space-y-0">
-// //                             {titleCategories.map((titleCategory) => (
-// //                                 <li key={titleCategory._id} className="relative group">
-
-// //                                     <button className="hover:text-yellow-400">
-// //                                         {titleCategory.title}
-// //                                     </button>
-// //                                     {categoriesByTitle[titleCategory._id]?.length > 0 && (
-// //                                         <ul className="absolute left-0 bg-white text-black shadow-lg rounded-md w-56 opacity-0 group-hover:opacity-100 group-hover:visible invisible transition-opacity duration-300">
-// //                                             {categoriesByTitle[titleCategory._id].map((category) => (
-// //                                                 <li
-// //                                                     key={category._id}
-// //                                                     className="hover:bg-blue-100 p-2 cursor-pointer"
-// //                                                     onClick={() => handleCategoryClick(category._id, category.name)}
-// //                                                 >
-// //                                                     {category.name}
-// //                                                 </li>
-// //                                             ))}
-// //                                         </ul>
-// //                                     )}
-// //                                 </li>
-// //                             ))}
-// //                         </ul>
-// //                     </nav> */}
-
-// //                     <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-// //                     <ProfileDropdown />
-// //                 </div>
-// //             </header>
-// //         </>
-// //     );
-// // }
-
-
 "use client";
 
 import Link from "next/link";
@@ -287,6 +8,11 @@ import SearchBar from "../searchbar/page";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+// detect touch devices (mobile/tablet)
+const isTouchDevice = () =>
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [userId, setUserId] = useState(null);
@@ -296,177 +22,236 @@ export default function Navbar() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
     const router = useRouter();
+    // const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
     useEffect(() => {
-        const storedUserId = localStorage.getItem("userId");
-        setUserId(storedUserId);
-        fetchAllTitleCategories();
+        const handleAuthChange = () => {
+            const updatedUserId = localStorage.getItem("userId");
+            setUserId(updatedUserId);
+        };
+        window.addEventListener("user-auth-changed", handleAuthChange);
+        return () => {
+            window.removeEventListener("user-auth-changed", handleAuthChange);
+        };
     }, []);
+
+
+    // fetch userId & categories on mount
+    useEffect(() => {
+        setUserId(localStorage.getItem("userId"));
+        fetchAllTitleCategories();
+
+        const storageHandler = () => setUserId(localStorage.getItem("userId"));
+        window.addEventListener("storage", storageHandler);
+        window.addEventListener("user-auth-changed", storageHandler);
+        return () => {
+            window.removeEventListener("storage", storageHandler);
+            window.removeEventListener("user-auth-changed", storageHandler);
+        };
+    }, []);
+
 
     const fetchAllTitleCategories = async () => {
         try {
-            const response = await axios.get("/api/admin/getalltitlecategory");
-            console.log(response.data);
-
-            setTitleCategories(response.data);
-            fetchAllCategories(response.data);
-            setLoading(false);
-        } catch (error) {
-            console.error("Error fetching title categories:", error);
-        }
-    };
-    const fetchAllCategories = async (titleCategories) => {
-        console.log(titleCategories, "titleCategories");
-
-        try {
-            const categoryData = {};
+            const { data } = await axios.get("/api/admin/getalltitlecategory");
+            setTitleCategories(data);
+            // then fetch each group of categories
+            const byTitle = {};
             await Promise.all(
-                titleCategories.map(async (titleCategory) => {
-                    const response = await axios.get(
-                        `/api/admin/getallcategory?titleCategory=${encodeURIComponent(titleCategory._id)}`
+                data.map(async (t) => {
+                    const res = await axios.get(
+                        `/api/admin/getallcategory?titleCategory=${encodeURIComponent(t._id)}`
                     );
-
-                    const categories = response.data?.data;
-                    console.log(categories, "fetched categories for", titleCategory.title);
-
-                    categoryData[titleCategory._id] = Array.isArray(categories) ? categories : [];
+                    byTitle[t._id] = Array.isArray(res.data?.data) ? res.data.data : [];
                 })
             );
-
-            console.log(categoryData, "cqq");
-            setCategoriesByTitle(categoryData);
-        } catch (error) {
-            console.error("Error fetching categories:", error);
+            setCategoriesByTitle(byTitle);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
         }
     };
 
+    const toggleMenu = () => setIsOpen((p) => !p);
+    const toggleDropdown = (idx) => setOpenDropdown((p) => (p === idx ? null : idx));
 
-    // const fetchAllCategories = async (titleCategories) => {
-    //     console.log(titleCategories, "titleCategories");
-
-    //     try {
-    //         const categoryData = {};
-    //         await Promise.all(
-    //             titleCategories.map(async (titleCategory) => {
-    //                 const response = await axios.get(
-    //                     `/api/admin/getallcategory?titleCategory=${encodeURIComponent(titleCategory._id)}`
-    //                 );
-    //                 console.log(response.data?.categories, "response");
-
-    //                 categoryData[titleCategory._id] = response.data?.categories || [];
-    //             })
-    //         );
-    //         console.log(categoryData, "cqq");
-
-    //         setCategoriesByTitle(categoryData);
-    //     } catch (error) {
-    //         console.error("Error fetching categories:", error);
-    //     }
-    // };
-
-    const toggleMenu = () => {
-        setIsOpen((prev) => !prev);
+    const handleCategoryClick = (id, name) => {
+        router.push(`/user/solvetestsubcategory?id=${id}&name=${encodeURIComponent(name)}`);
+        setIsOpen(false);
     };
 
-    const handleCategoryClick = (categoryId, categoryName) => {
-        router.push(`/user/solvetestsubcategory?id=${categoryId}&name=${encodeURIComponent(categoryName)}`);
-    };
-
-    const toggleDropdown = (index) => {
-        setOpenDropdown(openDropdown === index ? null : index);
+    const handleLogout = () => {
+        localStorage.removeItem("userId");
+        window.dispatchEvent(new Event("user-auth-changed"));
+        setUserId(null);
+        router.push("/user/login");
+        setIsOpen(false);
     };
 
     return (
         <>
-            {/* Top Bar */}
-            <div className="flex justify-between items-center py-2 px-4 md:px-6 bg-gray-100 hover:bg-gray-200">
-                <h6 className="text-xl md:text-2xl font-bold text-blue-600 hover:text-blue-800">
-                    Exam Portal
-                </h6>
-                <div className="flex items-center gap-3 text-gray-600 font-semibold">
-                    <Link href="#" className="hover:text-yellow-500">CONTACT US</Link>
-                    <Link href="#" className="hover:text-yellow-500">ASK QUESTION</Link>
-                    {!userId && (
-                        <Link href="/user/login" className="hover:text-yellow-500">LOGIN</Link>
-                    )}
-                </div>
-            </div>
-
-            {/* Navbar */}
+            {/* Top Navbar */}
             <header className="bg-blue-900 text-white shadow-md">
-                <div className="container mx-auto flex justify-between items-center py-3 px-4 md:px-6">
-                    {/* Menu Toggle Button for Mobile */}
+                <div className="container mx-auto flex justify-between items-center py-3 px-3 md:px-6">
+                    {/* Mobile hamburger */}
                     <button className="lg:hidden text-2xl" onClick={toggleMenu}>
                         {isOpen ? <FaTimes /> : <FaBars />}
                     </button>
 
-                    {/* Navigation Menu */}
-                    <nav className={`lg:flex ${isOpen ? "block" : "hidden"} w-full lg:w-auto mt-4 lg:mt-0`}>
+                    {/* Main nav (desktop & mobile) */}
+                    <nav className={`${isOpen ? "block" : "hidden"} lg:flex w-full lg:w-auto mt-4 lg:mt-0`}>
                         <ul className="flex flex-col lg:flex-row lg:space-x-6 space-y-2 lg:space-y-0">
-                            {loading ? (
-                                Array.from({ length: 4 }).map((_, index) => (
-                                    <li key={index} className="relative group">
-                                        <div className="w-24 h-6 bg-gray-300 rounded-md animate-pulse"></div>
-                                    </li>
+                            {loading
+                                ? // skeleton loaders
+                                Array.from({ length: 4 }).map((_, i) => (
+                                    <li key={i} className="w-24 h-6 bg-gray-300 rounded animate-pulse" />
                                 ))
-                            ) : (
-                                titleCategories.map((titleCategory, index) => (
-                                    <li key={titleCategory._id}
+                                : titleCategories.map((t, idx) => (
+                                    <li
+                                        key={t._id}
                                         className="relative"
-                                        onMouseEnter={() => setOpenDropdown(index)}
-                                        onMouseLeave={() => setOpenDropdown(null)}
-                                    // className="relative group"
+                                        onMouseEnter={() => !isTouchDevice() && setOpenDropdown(idx)}
+                                        onMouseLeave={() => !isTouchDevice() && setOpenDropdown(null)}
                                     >
                                         <button
-                                            className="hover:text-yellow-400 flex items-center"
-                                            onClick={() => toggleDropdown(index)}
+                                            className="flex items-center px-3 py-1 hover:text-yellow-400 w-full lg:w-auto justify-between"
+                                            onClick={() => toggleDropdown(idx)}
                                         >
-                                            {titleCategory.title}
-                                            {categoriesByTitle[titleCategory._id]?.length > 0 && (
+                                            {t.title}
+                                            {categoriesByTitle[t._id]?.length > 0 && (
                                                 <span className="ml-2">
-                                                    {openDropdown === index ? <FaChevronUp /> : <FaChevronDown />}
+                                                    {openDropdown === idx ? <FaChevronUp /> : <FaChevronDown />}
                                                 </span>
                                             )}
                                         </button>
-                                        {categoriesByTitle[titleCategory._id]?.length > 0 && openDropdown === index && (
-                                            <ul className="absolute left-0 bg-white text-black shadow-md rounded-md w-56 transition-opacity duration-300 z-50">
-                                                {categoriesByTitle[titleCategory._id].map((category) => (
+
+                                        {categoriesByTitle[t._id]?.length > 0 && openDropdown === idx && (
+                                            <ul className="absolute left-0 top-full mt-0 bg-white text-black shadow-md rounded w-56 z-50">
+                                                {categoriesByTitle[t._id].map((c) => (
                                                     <li
-                                                        key={category._id}
-                                                        className="hover:bg-blue-100 p-2 cursor-pointer"
-                                                        onClick={() => handleCategoryClick(category._id, category.name)}
+                                                        key={c._id}
+                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                        onClick={() => handleCategoryClick(c._id, c.name)}
                                                     >
-                                                        {category.name}
+                                                        {c.name}
                                                     </li>
                                                 ))}
                                             </ul>
                                         )}
                                     </li>
-                                ))
-                            )}
+                                ))}
 
-                            {/* Exam Menu Item */}
-                            <li className="relative group">
-                                <Link href="/user/exam" className="hover:text-yellow-400 flex items-center">
+                            {/* Exam link */}
+                            <li>
+                                <Link href="/user/exam" className="flex items-center px-3 py-1 hover:text-yellow-400">
                                     Exam
                                 </Link>
                             </li>
                         </ul>
                     </nav>
 
-                    {/* Search Bar & Profile */}
+                    {/* Search & Profile/Login */}
                     <div className="flex items-center gap-3">
                         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-                        <ProfileDropdown />
+                        {userId ? (
+                            <ProfileDropdown key={userId} handleLogout={handleLogout} />
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <Link
+                                    href="/user/login"
+                                    className="px-4 py-2 bg-amber-800 rounded hover:bg-amber-900"
+                                >
+                                    Login
+                                </Link>
+                                <Link
+                                    href="/user/signup"
+                                    className="px-4 py-2 bg-amber-800 rounded hover:bg-amber-900"
+                                >
+                                    SignUp
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>
+
+            {/* Sidebar (mobile only) */}
+            <div
+                className={`fixed top-0 left-0 h-full w-64 bg-blue-900 text-white shadow-lg transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+                    } transition-transform duration-300 lg:hidden z-50`}
+            >
+                {/* Close Button */}
+                <button
+                    className="absolute top-4 right-4 text-2xl"
+                    onClick={toggleMenu}
+                >
+                    <FaTimes />
+                </button>
+
+                {/* Navigation */}
+                <nav className="mt-16 px-4 space-y-4 overflow-y-auto h-[calc(100%-4rem)] pb-6">
+                    {loading ? (
+                        Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="w-24 h-6 bg-gray-300 rounded animate-pulse" />
+                        ))
+                    ) : (
+                        titleCategories.map((t, idx) => (
+                            <div key={t._id}>
+                                <button
+                                    className="w-full flex items-center justify-between py-2 px-2 rounded hover:bg-blue-800"
+                                    onClick={() => toggleDropdown(idx)}
+                                >
+                                    <span>{t.title}</span>
+                                    {categoriesByTitle[t._id]?.length > 0 && (
+                                        <span>
+                                            {openDropdown === idx ? <FaChevronUp /> : <FaChevronDown />}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Dropdown */}
+                                {openDropdown === idx && categoriesByTitle[t._id]?.length > 0 && (
+                                    <ul className="ml-4 mt-1 space-y-1">
+                                        {categoriesByTitle[t._id].map((c) => (
+                                            <li
+                                                key={c._id}
+                                                className="px-3 text-amber-300 py-1 rounded hover:bg-blue-700 cursor-pointer"
+                                                onClick={() => {
+                                                    handleCategoryClick(c._id, c.name);
+                                                    setTimeout(() => setIsOpen(false), 100);
+                                                }}
+                                            >
+                                                {c.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        ))
+                    )}
+
+                    {/* Exam Link */}
+                    <Link
+                        href="/user/exam"
+                        className="block py-2 px-2 hover:bg-blue-800 rounded"
+                        onClick={toggleMenu}
+                    >
+                        Exam
+                    </Link>
+
+                    {/* Login Link */}
+                    {!userId && (
+                        <Link
+                            href="/user/login"
+                            className="block py-2 px-2 hover:bg-blue-800 rounded"
+                            onClick={toggleMenu}
+                        >
+                            Login
+                        </Link>
+                    )}
+                </nav>
+            </div>
         </>
     );
 }
-
-
-
-
-
-

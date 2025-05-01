@@ -9,6 +9,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    contactNumber: {
+        type: String,
+        required: true,
+        unique: true, // This makes the contact number field unique
+    },
     username: {
         type: String,
         required: true,

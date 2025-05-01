@@ -32,7 +32,7 @@ export default function TiptapEditor({ value, onChange }) {
 
   return (
     <div className="border rounded-lg overflow-hidden">
-      <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-50">
+      <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-500">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}

@@ -292,7 +292,7 @@ const TitleCategoryList = () => {
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="ml-4 mt-2 space-y-2">
+                                                                    {/* <div className="ml-4 mt-2 space-y-2">
                                                                         {(questionsMap[sub._id] || []).length > 0 ? (
                                                                             questionsMap[sub._id].map((q, idx) => (
                                                                                 <motion.div
@@ -331,7 +331,7 @@ const TitleCategoryList = () => {
                                                                         ) : (
                                                                             <div className="text-xs text-gray-500 italic">No questions found</div>
                                                                         )}
-                                                                    </div>
+                                                                    </div> */}
                                                                 </motion.div>
                                                             ))}
                                                         </div>
