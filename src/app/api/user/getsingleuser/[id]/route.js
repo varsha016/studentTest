@@ -1,4 +1,4 @@
-import connectDB from "../../../lib/db";
+import connectDB from "../../../../lib/db";
 import User from "../../../models/user/UserModel";
 import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
