@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
     await connectDB();
 
-    const { id } = await params; // Extract user ID from the dynamic route
+    const { id } = await params;
 
     try {
         const user = await User.findById(id);
