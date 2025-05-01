@@ -1,5 +1,5 @@
 import connectDB from "../../../../lib/db";
-import User from "../../../models/user/UserModel";
+import User from "../../../../models/user/UserModel";
 import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
     await connectDB();
