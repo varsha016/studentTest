@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import Loading from "../Loading/page";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
 
 const SectionPageContent = () => {
     const searchParams = useSearchParams();
@@ -23,6 +24,7 @@ const SectionPageContent = () => {
     const [loading, setLoading] = useState(true);
     const [showExplanation, setShowExplanation] = useState({});
     const [savedQuestions, setSavedQuestions] = useState([]);
+    const [subcategoryIds, setSubcategoryIds] = useState();
 
     const router = useRouter();
     const [userId, setUserId] = useState(null);
@@ -232,9 +234,34 @@ const SectionPageContent = () => {
         return tempDiv.textContent || tempDiv.innerText || "";
     }
 
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            padding: '2px',
+            borderRadius: '0.5rem',
+            backgroundColor: '#f3f4f6', // Tailwind bg-gray-100
+            border: 'none',
+            boxShadow: 'none',
+            ':hover': {
+                backgroundColor: '#dbeafe', // Tailwind hover:bg-blue-100
+            },
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+                ? '#3b82f6' // Tailwind bg-blue-500
+                : state.isFocused
+                    ? '#dbeafe' // Tailwind hover:bg-blue-100
+                    : '#f3f4f6', // Tailwind bg-gray-100
+            color: state.isSelected ? 'white' : '#1f2937', // Tailwind text-white or text-gray-800
+            cursor: 'pointer',
+            padding: '10px',
+        }),
+    };
     return (
         <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-r from-gray-100 to-gray-200">
             {/* Sidebar */}
+
             <div className="lg:w-1/4 w-full p-6 bg-white shadow-md overflow-auto">
                 <h2 className="text-2xl font-bold text-blue-600 mb-4">Sub Categories</h2>
                 {loading ? (
@@ -246,25 +273,58 @@ const SectionPageContent = () => {
                             ></li>
                         ))}
                     </ul>
-                ) :
-                    subcategories.length > 0 ? (
-                        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+                ) : subcategories.length > 0 ? (
+
+                    <>
+                        {/* Mobile View: Select Dropdown (hidden on desktop) */}
+
+
+                        <div className="lg:hidden mb-4 w-full">
+                            <Select
+                                styles={customStyles}
+                                className="react-select-container "
+                                classNamePrefix="react-select"
+                                options={subcategories.map((category) => ({
+                                    value: category._id,
+                                    label: category.name,
+                                }))}
+                                value={subcategories.find((sub) => sub._id === subcategoryId) || null}
+                                onChange={(selectedOption) => {
+                                    if (selectedOption) {
+                                        const selectedSubcategory = subcategories.find(
+                                            (sub) => sub._id === selectedOption.value
+                                        );
+                                        if (selectedSubcategory) {
+                                            handleSectionClick(selectedSubcategory);
+                                        }
+                                    }
+                                }}
+                                placeholder="Select a subcategory"
+                                isClearable
+                            />
+                        </div>
+
+                        {/* Desktop View: Original List (hidden on mobile) */}
+                        <div className="hidden lg:block max-h-48 overflow-y-auto space-y-2 pr-2">
                             <ul className="space-y-2">
                                 {subcategories?.map((category) => (
                                     <li
                                         key={category._id}
-                                        className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
-                                    // className="p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer"
+                                        className={`p-3 rounded-lg transition duration-300 cursor-pointer ${category._id === subcategoryId
+                                            ? "bg-blue-500 text-white hover:bg-blue-600"
+                                            : "bg-gray-100 hover:bg-blue-100"
+                                            }`}
+                                        onClick={() => setSubcategoryIds(category._id)}
                                     >
                                         {category.name}
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                    )
-                        : (
-                            <p className="text-gray-500">No categories available</p>
-                        )}
+                    </>
+                ) : (
+                    <p className="text-gray-500">No categories available</p>
+                )}
             </div>
 
             {/* Main Content */}
@@ -323,47 +383,49 @@ const SectionPageContent = () => {
                                                     />
                                                 </div>
                                             ) : (
+
                                                 <ul className="mt-2 space-y-2">
-                                                    {question.options?.map((option, optIndex) => {
-                                                        const isCorrect = optIndex === question.correctOptionIndex;
-                                                        const isSelected = answers[question._id] === option;
-                                                        return (
-                                                            <li
-                                                                key={optIndex}
-                                                                className={`p-2 rounded-lg flex justify-between items-center ${isSelected
-                                                                    ? isCorrect
-                                                                        ? "bg-green-100"
-                                                                        : "bg-red-100"
-                                                                    : "bg-gray-200"
-                                                                    }`}
-                                                            >
-                                                                <label className="flex items-center space-x-2">
-                                                                    <input
-                                                                        type="radio"
-                                                                        name={`mcq-${question._id}`}
-                                                                        value={option}
-                                                                        checked={isSelected}
-                                                                        onChange={() =>
-                                                                            setAnswers((prev) => ({
-                                                                                ...prev,
-                                                                                [question._id]: option,
-                                                                            }))
-                                                                        }
-                                                                    />
-                                                                    <span
-                                                                        className={`${isSelected && isCorrect ? "font-bold" : ""
-                                                                            }`}
-                                                                    >
-                                                                        <div
-                                                                            className="prose prose-sm max-w-none"
-                                                                            dangerouslySetInnerHTML={{ __html: option }}
+                                                    {question.options
+                                                        ?.filter(option => option && option.trim() !== '') // Filter out empty options
+                                                        ?.map((option, optIndex) => {
+                                                            // Get the original index since we filtered the array
+                                                            const originalIndex = question.options.indexOf(option);
+                                                            const isCorrect = originalIndex === question.correctOptionIndex;
+                                                            const isSelected = answers[question._id] === option;
+
+                                                            return (
+                                                                <li
+                                                                    key={originalIndex}
+                                                                    className={`p-2 rounded-lg flex justify-between items-center ${isSelected
+                                                                        ? isCorrect
+                                                                            ? "bg-green-100"
+                                                                            : "bg-red-100"
+                                                                        : "bg-gray-200"
+                                                                        }`}
+                                                                >
+                                                                    <label className="flex items-center space-x-2">
+                                                                        <input
+                                                                            type="radio"
+                                                                            name={`mcq-${question._id}`}
+                                                                            value={option}
+                                                                            checked={isSelected}
+                                                                            onChange={() =>
+                                                                                setAnswers((prev) => ({
+                                                                                    ...prev,
+                                                                                    [question._id]: option,
+                                                                                }))
+                                                                            }
                                                                         />
-                                                                        {/* {option} */}
-                                                                    </span>
-                                                                </label>
-                                                            </li>
-                                                        );
-                                                    })}
+                                                                        <span className={`${isSelected && isCorrect ? "font-bold" : ""}`}>
+                                                                            <div
+                                                                                className="prose prose-sm max-w-none"
+                                                                                dangerouslySetInnerHTML={{ __html: option }}
+                                                                            />
+                                                                        </span>
+                                                                    </label>
+                                                                </li>
+                                                            );
+                                                        })}
                                                 </ul>
                                             )}
 

@@ -3,7 +3,7 @@
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import Select from "react-select";
 const SectionPageContent = () => {
     const searchParams = useSearchParams();
     const subcategoryId = searchParams.get("id") || "No value";
@@ -101,7 +101,30 @@ const SectionPageContent = () => {
             setIsSubmitting(false);
         }
     };
-
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            padding: '2px',
+            borderRadius: '0.5rem',
+            backgroundColor: '#f3f4f6', // Tailwind bg-gray-100
+            border: 'none',
+            boxShadow: 'none',
+            ':hover': {
+                backgroundColor: '#dbeafe', // Tailwind hover:bg-blue-100
+            },
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+                ? '#3b82f6' // Tailwind bg-blue-500
+                : state.isFocused
+                    ? '#dbeafe' // Tailwind hover:bg-blue-100
+                    : '#f3f4f6', // Tailwind bg-gray-100
+            color: state.isSelected ? 'white' : '#1f2937', // Tailwind text-white or text-gray-800
+            cursor: 'pointer',
+            padding: '10px',
+        }),
+    };
     return (
         <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-r from-gray-100 to-gray-200">
             {/* Sidebar */}
@@ -119,22 +142,87 @@ const SectionPageContent = () => {
                             ))}
                         </ul>
                     </div>
-                ) : subcategories.length > 0 ? (
-                    <ul className="space-y-2">
-                        {subcategories?.map((subcategory) => (
-                            <li
-                                key={subcategory._id}
-                                className={`p-3 bg-gray-100 hover:bg-blue-100 rounded-lg transition duration-300 cursor-pointer ${selectedSection?._id === subcategory._id ? "bg-blue-500 text-white" : ""
-                                    }`}
-                                onClick={() => handleSectionClick(subcategory)}
-                            >
-                                {subcategory.name}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500">No subcategories available</p>
-                )}
+                ) :
+                    subcategories.length > 0 ? (
+                        <>
+                            {/* Mobile View: Select Dropdown (visible only on <lg) */}
+                            {/* <div className="lg:hidden mb-4 w-full">
+                                <select
+                                    className=" max-w-64 p-3 border-none rounded-lg bg-gray-100 hover:bg-blue-100 focus:bg-blue-50 transition duration-300"
+                                    // className="w-full p-3 rounded-lg bg-gray-100 hover:bg-blue-100 focus:bg-blue-50 transition duration-300"
+                                    value={subcategoryId}
+                                    onChange={(e) => {
+                                        const selectedSubcategory = subcategories.find(
+                                            (sub) => sub._id === e.target.value
+                                        );
+                                        if (selectedSubcategory) {
+                                            handleSectionClick(selectedSubcategory);
+                                        }
+                                    }}
+                                >
+                                    <option value="" className="font-normal text-sm text-gray-700">Select a subcategory</option>
+                                    {subcategories.map((category) => (
+                                        <option
+                                            key={category._id}
+                                            value={category._id}
+                                            title={category.name}
+                                            className={`p-3  rounded-lg transition duration-300 cursor-pointer ${category._id === subcategoryId
+                                                ? "bg-blue-600 text-sm text-white hover:bg-blue-800"
+                                                : "bg-gray-100 text-sm hover:bg-blue-100"
+                                                }`}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div> */}
+                            <div className="lg:hidden mb-4 w-full">
+                                <Select
+                                    styles={customStyles}
+                                    className="react-select-container"
+                                    classNamePrefix="react-select"
+                                    options={subcategories.map((category) => ({
+                                        value: category._id,
+                                        label: category.name,
+                                    }))}
+                                    value={subcategories.find((sub) => sub._id === subcategoryId) || null}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            const selectedSubcategory = subcategories.find(
+                                                (sub) => sub._id === selectedOption.value
+                                            );
+                                            if (selectedSubcategory) {
+                                                handleSectionClick(selectedSubcategory);
+                                            }
+                                        }
+                                    }}
+                                    placeholder="Select a subcategory"
+                                    isClearable
+                                />
+                            </div>
+
+                            {/* Desktop View: Clickable List (visible only on lg and above) */}
+                            <div className="hidden lg:block max-h-48 overflow-y-auto pr-2">
+                                <ul className="space-y-2">
+                                    {subcategories.map((category) => (
+                                        <li
+                                            key={category._id}
+                                            className={`p-3 rounded-lg cursor-pointer transition duration-300 ${category._id === subcategoryId
+                                                ? "bg-blue-500 text-white hover:bg-blue-600"
+                                                : "bg-gray-100 hover:bg-blue-100"
+                                                }`}
+                                            onClick={() => handleSectionClick(category)}
+                                        >
+                                            {category.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </>
+                    )
+                        : (
+                            <p className="text-gray-500">No subcategories available</p>
+                        )}
             </div>
 
             {/* Main Content */}
@@ -166,23 +254,31 @@ const SectionPageContent = () => {
                                         }
                                     />
                                 ) : (
+
                                     <ul className="mt-2 space-y-2">
-                                        {question.options.map((option, optIndex) => (
-                                            <li key={optIndex} className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-                                                <label className="flex items-center space-x-2">
-                                                    <input
-                                                        type="radio"
-                                                        name={`mcq-${question._id}`}
-                                                        value={option}
-                                                        checked={answers[question._id] === option}
-                                                        onChange={() =>
-                                                            setAnswers((prev) => ({ ...prev, [question._id]: option }))
-                                                        }
-                                                    />
-                                                    <span>{option}</span>
-                                                </label>
-                                            </li>
-                                        ))}
+                                        {question.options
+                                            .filter(option => option && option.trim() !== '') // Filter out empty or whitespace-only options
+                                            .map((option, optIndex) => (
+                                                <li key={optIndex} className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                                    <label className="flex items-center space-x-2">
+                                                        <input
+                                                            type="radio"
+                                                            name={`mcq-${question._id}`}
+                                                            value={option}
+                                                            checked={answers[question._id] === option}
+                                                            onChange={() =>
+                                                                setAnswers((prev) => ({ ...prev, [question._id]: option }))
+                                                            }
+                                                        />
+                                                        <span>
+                                                            <div
+                                                                className="prose prose-sm max-w-none"
+                                                                dangerouslySetInnerHTML={{ __html: option }}
+                                                            />
+                                                        </span>
+                                                    </label>
+                                                </li>
+                                            ))}
                                     </ul>
                                 )}
                             </div>
@@ -194,8 +290,8 @@ const SectionPageContent = () => {
                                 onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
                                 disabled={currentPage === 0}
                                 className={`px-4 py-2 rounded-lg ${currentPage === 0
-                                        ? "bg-gray-300 cursor-not-allowed"
-                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600"
                                     }`}
                             >
                                 Previous
@@ -213,8 +309,8 @@ const SectionPageContent = () => {
                                     onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
                                     disabled={currentPage === totalPages - 1}
                                     className={`px-4 py-2 rounded-lg ${currentPage === totalPages - 1
-                                            ? "bg-gray-300 cursor-not-allowed"
-                                            : "bg-blue-500 text-white hover:bg-blue-600"
+                                        ? "bg-gray-300 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
                                         }`}
                                 >
                                     Next

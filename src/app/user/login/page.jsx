@@ -7,8 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
-        username: "",
-        password: "",
+        username: "user@gmail.com",
+        password: "123",
     });
     const [error, setError] = useState("");
     const router = useRouter();
@@ -90,6 +90,10 @@ export default function LoginPage() {
                     Login
                 </button>
             </form>
+            <p className="text-right mt-2 text-blue-500 cursor-pointer" onClick={() => router.push("./ForgotPasswordPage")}>
+                Forgot Password?
+            </p>
+
         </div>
     );
 }

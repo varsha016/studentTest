@@ -33,6 +33,7 @@ export default function SignupPage() {
 
             const data = await response.json();
 
+
             if (!response.ok) {
                 setError(data.message || "Something went wrong");
                 toast.error(data.message || "Signup failed!");

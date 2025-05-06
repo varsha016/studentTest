@@ -159,7 +159,7 @@ function AddedQuestions() {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Added Questions</h2>
+        <h2 className="text-2xl font-bold text-gray-800 pr-1 pl-0">Added Questions</h2>
         {questions?.length === 0 ? (
           <button
             onClick={() => router.push("/admin/dashboard/addquestion")}
@@ -168,8 +168,9 @@ function AddedQuestions() {
             <PlusIcon className="w-4 h-4" />
             Add Questions
           </button>
-        ) : (
-          <div className="flex gap-3">
+        ) : <>
+          {/* Desktop buttons (hidden on mobile) */}
+          <div className="hidden lg:flex gap-3">
             <button
               onClick={() => router.push("/admin/dashboard/addquestion")}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
@@ -184,9 +185,7 @@ function AddedQuestions() {
             >
               {loading ? (
                 <>
-                  {/* <Spinner className="w-4 h-4" /> */}
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-
                   Redirecting...
                 </>
               ) : (
@@ -197,7 +196,35 @@ function AddedQuestions() {
               )}
             </button>
           </div>
-        )}
+
+          {/* Mobile buttons (hidden on desktop) */}
+          <div className="lg:hidden flex flex-wrap gap-3 w-full">
+            <button
+              onClick={() => router.push("/admin/dashboard/addquestion")}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 flex-1 min-w-[150px] justify-center"
+            >
+              <PlusIcon className="w-4 h-4" />
+              <span className="whitespace-nowrap">Add Question</span>
+            </button>
+            <button
+              onClick={handleSubmitApproval}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center gap-2 flex-1 min-w-[150px] justify-center"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                  <span className="whitespace-nowrap">Redirecting...</span>
+                </>
+              ) : (
+                <>
+                  <CheckIcon className="w-4 h-4" />
+                  <span className="whitespace-nowrap">Submit for Approval</span>
+                </>
+              )}
+            </button>
+          </div>
+        </>}
       </div>
 
       {questions?.length === 0 ? (

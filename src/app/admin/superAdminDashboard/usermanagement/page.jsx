@@ -80,7 +80,7 @@ export default function UserManagement() {
                             <tr className="bg-gray-200">
                                 <th className="border border-gray-300 px-4 py-2">Name</th>
                                 <th className="border border-gray-300 px-4 py-2">Username</th>
-                                <th className="border border-gray-300 px-4 py-2">Password</th>
+                                {/* <th className="border border-gray-300 px-4 py-2">Password</th> */}
                                 <th className="border border-gray-300 px-4 py-2">Contact</th>
                                 <th className="border border-gray-300 px-4 py-2">Actions</th>
                             </tr>
@@ -90,7 +90,7 @@ export default function UserManagement() {
                                 <tr key={user._id} className="hover:bg-gray-100">
                                     <td className="border border-gray-300 px-4 py-2">{user.name}</td>
                                     <td className="border border-gray-300 px-4 py-2">{user.username}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{user.password}</td>
+                                    {/* <td className="border border-gray-300 px-4 py-2">{user.password}</td> */}
                                     <td className="border border-gray-300 px-4 py-2">{user.contactNumber}</td>
                                     <td className="border border-gray-300 px-4 py-2">
                                         <button

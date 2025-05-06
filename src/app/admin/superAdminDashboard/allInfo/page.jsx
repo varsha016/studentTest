@@ -18,6 +18,7 @@ const TitleCategoryList = () => {
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState("");
     const [openTitles, setOpenTitles] = useState({});
+    const [openCategories, setOpenCategories] = useState({});
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteInfo, setDeleteInfo] = useState({ type: "", id: "" });
     const [editModal, setEditModal] = useState({ type: '', id: '', value: '' });
@@ -173,6 +174,169 @@ const TitleCategoryList = () => {
                         <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
                     </div>
                 ) : (
+                    // <div className="space-y-6">
+                    //     {titleCategories.map((title) => (
+                    //         <motion.div
+                    //             key={title._id}
+                    //             className="bg-gray-800 rounded-xl shadow-lg overflow-hidden"
+                    //             initial={{ opacity: 0, y: 20 }}
+                    //             animate={{ opacity: 1, y: 0 }}
+                    //             transition={{ duration: 0.3 }}
+                    //         >
+                    //             {/* Title Category Header */}
+                    //             <div
+                    //                 className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-700 transition-colors"
+                    //                 onClick={() => toggleTitle(title._id)}
+                    //             >
+                    //                 <div className="flex items-center space-x-3">
+                    //                     <h2 className="text-xl font-bold text-blue-300">{title.title}</h2>
+                    //                     <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                    //                         {(categoryMap[title._id] || []).length} Categories
+                    //                     </span>
+                    //                 </div>
+                    //                 <div className="flex items-center space-x-3">
+                    //                     <button
+                    //                         onClick={(e) => {
+                    //                             e.stopPropagation();
+                    //                             handleEditClick('TitleCategory', title._id, title.title);
+                    //                         }}
+                    //                         className="text-blue-400 hover:text-blue-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                         title="Edit"
+                    //                     >
+                    //                         <Edit size={18} />
+                    //                     </button>
+                    //                     <button
+                    //                         onClick={(e) => {
+                    //                             e.stopPropagation();
+                    //                             handleDeleteClick('TitleCategory', title._id);
+                    //                         }}
+                    //                         className="text-red-400 hover:text-red-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                         title="Delete"
+                    //                     >
+                    //                         <Trash2 size={18} />
+                    //                     </button>
+                    //                     {openTitles[title._id] ? (
+                    //                         <ChevronUp className="text-gray-400" />
+                    //                     ) : (
+                    //                         <ChevronDown className="text-gray-400" />
+                    //                     )}
+                    //                 </div>
+                    //             </div>
+
+                    //             <AnimatePresence>
+                    //                 {openTitles[title._id] && (
+                    //                     <motion.div
+                    //                         initial={{ opacity: 0, height: 0 }}
+                    //                         animate={{ opacity: 1, height: 'auto' }}
+                    //                         exit={{ opacity: 0, height: 0 }}
+                    //                         transition={{ duration: 0.3 }}
+                    //                         className="px-5"
+                    //                     >
+                    //                         <div className="border-t border-gray-700 pt-4 pb-6 space-y-4">
+                    //                             {(categoryMap[title._id] || []).map((cat) => (
+                    //                                 <motion.div
+                    //                                     key={cat._id}
+                    //                                     className="bg-gray-750 rounded-lg p-4 shadow"
+                    //                                     initial={{ opacity: 0 }}
+                    //                                     animate={{ opacity: 1 }}
+                    //                                     transition={{ delay: 0.1 }}
+                    //                                 >
+                    //                                     {/* Category Header with Chevron */}
+                    //                                     <div
+                    //                                         className="flex justify-between items-center mb-3 cursor-pointer"
+                    //                                         onClick={() => toggleCategory(cat._id)}
+                    //                                     >
+                    //                                         <div className="flex items-center space-x-2">
+                    //                                             <h3 className="text-lg font-semibold text-purple-300">
+                    //                                                 {cat.name}
+                    //                                             </h3>
+                    //                                             <span className="text-xs bg-purple-500 text-white px-2 py-1 rounded-full">
+                    //                                                 {(subcategoryMap[cat._id] || []).length} Subcategories
+                    //                                             </span>
+                    //                                         </div>
+                    //                                         <div className="flex items-center space-x-2">
+                    //                                             <button
+                    //                                                 onClick={(e) => {
+                    //                                                     e.stopPropagation();
+                    //                                                     handleEditClick('Category', cat._id, cat.name);
+                    //                                                 }}
+                    //                                                 className="text-blue-400 hover:text-blue-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                                                 title="Edit"
+                    //                                             >
+                    //                                                 <Edit size={16} />
+                    //                                             </button>
+                    //                                             <button
+                    //                                                 onClick={(e) => {
+                    //                                                     e.stopPropagation();
+                    //                                                     handleDeleteClick('Category', cat._id);
+                    //                                                 }}
+                    //                                                 className="text-red-400 hover:text-red-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                                                 title="Delete"
+                    //                                             >
+                    //                                                 <Trash2 size={16} />
+                    //                                             </button>
+                    //                                             {openCategories[cat._id] ? (
+                    //                                                 <ChevronUp className="text-gray-400" />
+                    //                                             ) : (
+                    //                                                 <ChevronDown className="text-gray-400" />
+                    //                                             )}
+                    //                                         </div>
+                    //                                     </div>
+
+                    //                                     {/* Subcategories Section */}
+                    //                                     <AnimatePresence>
+                    //                                         {openCategories[cat._id] && (
+                    //                                             <motion.div
+                    //                                                 initial={{ opacity: 0, height: 0 }}
+                    //                                                 animate={{ opacity: 1, height: 'auto' }}
+                    //                                                 exit={{ opacity: 0, height: 0 }}
+                    //                                                 transition={{ duration: 0.2 }}
+                    //                                                 className="ml-4 space-y-3"
+                    //                                             >
+                    //                                                 {(subcategoryMap[cat._id] || []).map((sub) => (
+                    //                                                     <motion.div
+                    //                                                         key={sub._id}
+                    //                                                         className="bg-gray-700 rounded-md p-3"
+                    //                                                         initial={{ opacity: 0 }}
+                    //                                                         animate={{ opacity: 1 }}
+                    //                                                         transition={{ delay: 0.1 }}
+                    //                                                     >
+                    //                                                         {/* Subcategory Header */}
+                    //                                                         <div className="flex justify-between items-center mb-2">
+                    //                                                             <h4 className="text-sm font-medium text-yellow-300">
+                    //                                                                 {sub.name}
+                    //                                                             </h4>
+                    //                                                             <div className="flex space-x-2">
+                    //                                                                 <button
+                    //                                                                     onClick={() => handleEditClick('SubCategory', sub._id, sub.name)}
+                    //                                                                     className="text-blue-400 hover:text-blue-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                                                                     title="Edit"
+                    //                                                                 >
+                    //                                                                     <Edit size={14} />
+                    //                                                                 </button>
+                    //                                                                 <button
+                    //                                                                     onClick={() => handleDeleteClick('SubCategory', sub._id)}
+                    //                                                                     className="text-red-400 hover:text-red-300 p-1 rounded-full hover:bg-gray-600 transition-colors"
+                    //                                                                     title="Delete"
+                    //                                                                 >
+                    //                                                                     <Trash2 size={14} />
+                    //                                                                 </button>
+                    //                                                             </div>
+                    //                                                         </div>
+                    //                                                     </motion.div>
+                    //                                                 ))}
+                    //                                             </motion.div>
+                    //                                         )}
+                    //                                     </AnimatePresence>
+                    //                                 </motion.div>
+                    //                             ))}
+                    //                         </div>
+                    //                     </motion.div>
+                    //                 )}
+                    //             </AnimatePresence>
+                    //         </motion.div>
+                    //     ))}
+                    // </div>
                     <div className="space-y-6">
                         {titleCategories.map((title) => (
                             <motion.div

@@ -16,8 +16,8 @@ export default function OperatorLoginPage() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // const baseURL = "http://localhost:3000/api";
-    const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const baseURL = "http://localhost:3000/api";
+    // const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -84,6 +84,9 @@ export default function OperatorLoginPage() {
                         {loading ? "Logging in..." : "Login"}
                     </button>
                 </form>
+                <p className="text-right mt-2 text-blue-500 cursor-pointer" onClick={() => router.push("./forgotpassword")}>
+                    Forgot Password?
+                </p>
             </div>
         </div>
     );
